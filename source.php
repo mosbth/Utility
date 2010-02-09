@@ -3,9 +3,9 @@
 //
 // source.php
 //
-// Description: Shows a directory listning.
+// Description: Shows a directory listning and view content of files.
 //
-// Author: Mikael Roos
+// Author: Mikael Roos, mos@bth.se
 //
 
 // -------------------------------------------------------------------------------------------
@@ -159,8 +159,40 @@ EOD;
 //
 // Create and print out the html-page
 //
-$title 		= "Show sourcecode";
-require_once('page.php');
+$title = "Show sourcecode";
+$charset = "utf-8";
+$language = "en";
+$stylesheet = "stylesheet.css";
+$favicon = "favicon.ico";
+$debug = @$debugEnable ? $debug : "";
+ 
+$html = <<< EOD
+<!DOCTYPE html>
+<html lang="{$language}">
+<head>
+	<meta charset="{$charset}" />
+	<title>{$title}</title>
+ 	<style>
+ 		div.code {
+			font-family: monospace;
+			border: solid 1px #999999;
+			background: #eeeeee;
+			padding: 1em;
+		}
+	</style>
+	<script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+</head>
+<body>
+	{$html}
+</body>
+</html>
+EOD;
+ 
+ 
+// Print the header and page
+header("Content-Type: text/html; charset={$charset}");
+echo $html;
+exit;
 
 
 ?>
