@@ -164,9 +164,6 @@ EOD;
 $title = "Show sourcecode";
 $charset = "utf-8";
 $language = "en";
-$stylesheet = "stylesheet.css";
-$favicon = "favicon.ico";
-$debug = @$debugEnable ? $debug : "";
  
 $html = <<< EOD
 <!DOCTYPE html>
