@@ -14,7 +14,8 @@
 //
 
 // Separator between directories and files, change between Unix/Windows
-$SEPARATOR = '/'; 	// Unix, Linux, MacOS, Solaris
+$SEPARATOR = DIRECTORY_SEPARATOR; 	// Using built-in PHP-constant for separator.
+//$SEPARATOR = '/'; 	// Unix, Linux, MacOS, Solaris
 //$SEPARATOR = '\\'; 	// Windows 
 
 // Show the content of files named config.php, except the rows containing DB_USER, DB_PASSWORD
@@ -22,6 +23,7 @@ $SEPARATOR = '/'; 	// Unix, Linux, MacOS, Solaris
 $HIDE_DB_USER_PASSWORD = TRUE; 
 
 // Which directory to use as basedir, end with separator
+// Default is current directory
 $BASEDIR = '.' . $SEPARATOR;
 
 // Show syntax of the code, currently only supporting PHP or DEFAULT.
