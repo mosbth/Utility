@@ -78,6 +78,7 @@ do {
 // Prepare the text
 //
 $html = "<h1>Create tables using foreign keys, innodb and multi_query</h2>";
+$html .= "<p>Verifying MySQL problem: <a href='http://bugs.mysql.com/bug.php?id=40877'>http://bugs.mysql.com/bug.php?id=40877</a>";
 
 $html .= "<h2>Details on environment</h2>";
 $html .= "<p>PHP is: " . phpversion() . "</p>";
