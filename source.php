@@ -1,7 +1,9 @@
 <?php
 // ===========================================================================================
 //
-// source.php
+// Origin: http://github.com/mosbth/Utility
+//
+// Filename: source.php
 //
 // Description: Shows a directory listning and view content of files.
 //

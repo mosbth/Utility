@@ -1,15 +1,17 @@
 <?php
 // ===========================================================================================
 //
-// multiquery_foreignkey_innodb.php
+// Origin: http://github.com/mosbth/Utility
 //
-// Common file for test purpose. Easy to use to test database connections, depends on 
+// Filename: multiquery_foreignkey_innodb.php
+//
+// Description: Common file for test purpose. Easy to use to test database connections, depends on 
 // config.php where all database details are. 
 //
 // This particular testcase is to verify if there is a problem with creating tables
 // using the InnoDB engine in a multi_query with foreign key constraints.
 //
-// Author Mikael Roos, mos@bth.se
+// Author: Mikael Roos, mos@bth.se
 //
 
 require_once('config.php');
