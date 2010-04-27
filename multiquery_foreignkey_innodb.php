@@ -41,19 +41,19 @@ DROP TABLE IF EXISTS {$tableGrade};
 DROP TABLE IF EXISTS {$tableProfessor};
 
 CREATE TABLE {$tableProfessor} (
-    idProfessor INT AUTO_INCREMENT NOT NULL PRIMARY KEY,
-    nameProfessor CHAR(40),
-    infoProfessor CHAR(100),
-    pictureProfessor CHAR(100)
+	idProfessor INT AUTO_INCREMENT NOT NULL PRIMARY KEY,
+	nameProfessor CHAR(40),
+	infoProfessor CHAR(100),
+	pictureProfessor CHAR(100)
 ) ENGINE=InnoDB;
 
 CREATE TABLE {$tableGrade} (
-    idGrade INT AUTO_INCREMENT NOT NULL PRIMARY KEY,
-    Grade_idProfessor INT,
-  FOREIGN KEY (Grade_idProfessor) REFERENCES {$tableProfessor} (idProfessor),
-    valueGrade INT,
-    commentGrade CHAR(100),
-    dateGrade DATETIME
+	idGrade INT AUTO_INCREMENT NOT NULL PRIMARY KEY,
+	Grade_idProfessor INT NOT NULL,
+	FOREIGN KEY (Grade_idProfessor) REFERENCES {$tableProfessor} (idProfessor),
+	valueGrade INT,
+	commentGrade CHAR(100),
+	dateGrade DATETIME
 ) ENGINE=InnoDB;
 
 EOD;
