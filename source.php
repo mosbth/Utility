@@ -9,10 +9,17 @@
 //
 // Author: Mikael Roos, mos@bth.se
 //
+// Change history:
+// 
+// 2010-04-27: 
+// Hide password even in config.php~.
+// Added rownumbers and enabled linking to specific row-number.
+//
 
 // -------------------------------------------------------------------------------------------
 //
-// Settings for this pagecontroller.
+// Settings for this pagecontroller. Review and change these settings to match your own
+// environment.
 //
 
 // Separator between directories and files, change between Unix/Windows
@@ -21,10 +28,9 @@ $SEPARATOR = DIRECTORY_SEPARATOR; 	// Using built-in PHP-constant for separator.
 //$SEPARATOR = '\\'; 	// Windows 
 
 // Show the content of files named config.php, except the rows containing DB_USER, DB_PASSWORD
-//$HIDE_DB_USER_PASSWORD = FALSE; 
-$HIDE_DB_USER_PASSWORD = TRUE; 
+$HIDE_DB_USER_PASSWORD = TRUE; // TRUE or FALSE
 
-// Which directory to use as basedir, end with separator
+// Which directory to use as basedir for file listning, end with separator.
 // Default is current directory
 $BASEDIR = '.' . $SEPARATOR;
 
@@ -33,10 +39,9 @@ $BASEDIR = '.' . $SEPARATOR;
 // DEFAULT performs <pre> and htmlspecialchars.
 // HTML to be done.
 // CSS to be done.
-$SYNTAX = 'PHP';
+$SYNTAX = 'PHP'; // DEFAULT or PHP
 
-// The link to this page, usefull to change when using this pagecontroller for other things,
-// such as showing stylesheets in a separate directory, for example.
+// The link to this page. You may want to change it from relative link to absolute link.
 $HREF = 'source.php?';
 
 
@@ -134,7 +139,8 @@ if(isset($_GET['file'])) {
 	$content = file_get_contents($dir . $SEPARATOR . $file, 'FILE_TEXT');
 
 	// Remove password and user from config.php, if enabled
-	if($HIDE_DB_USER_PASSWORD == TRUE && $file == 'config.php') {
+	if($HIDE_DB_USER_PASSWORD == TRUE && 
+		 ($file == 'config.php' || $file == 'config.php~')) {
 
 		$pattern[0] 	= '/(DB_PASSWORD|DB_USER)(.+)/';
 		$replace[0] 	= '/* <em>\1,  is removed and hidden for security reasons </em> */ );';
@@ -145,16 +151,41 @@ if(isset($_GET['file'])) {
 	// Show syntax if defined
 	if($SYNTAX == 'PHP') {
 		$content = highlight_string($content, TRUE);
-	} else {
+		$sloc = 0;
+		$i=0;
+		$rownums = "";
+		$text = "";
+		$a = explode('<br />', $content);		
+		foreach($a as $row) {
+			$i++;
+			$sloc += (empty($row)) ? 0 : 1;
+			$rownums .= "<a id='L{$i}' href='#L{$i}'>{$i}</a><br />";
+			$text .= $row . '<br />';
+		}
+		$content = <<< EOD
+<div class='container'>
+<div class='header'>
+{$i} lines ({$sloc} sloc)
+</div>
+<div class='rows'>
+{$rownums}
+</div>
+<div class='code'>
+{$text}
+</div>
+</div>
+EOD;
+	} 
+	
+	// DEFAULT formatting
+	else {
 		$content = htmlspecialchars($content);
 		$content = "<pre>{$content}</pre>";
 	}
 	
 	$html .= <<<EOD
-<fieldset>
-<legend><a href='{$HREF}'>{$file}</a></legend>
+<h3>{$file}</h3>
 {$content}
-</fieldset>
 EOD;
 }
 
@@ -174,11 +205,39 @@ $html = <<< EOD
 	<meta charset="{$charset}" />
 	<title>{$title}</title>
  	<style>
- 		div.code {
+ 		div.container {
+			min-width: 40em;
 			font-family: monospace;
+			font-size: 0.8em;
+ 		}
+ 		div.header {
+			color: #000;
+			font-size: 1.1em;
 			border: solid 1px #999999;
-			background: #eeeeee;
-			padding: 1em;
+			border-bottom: 0px;
+			background: #cacaca;
+			padding: 0.5em 0.5em 0.5em 0.5em;
+		}	
+ 		div.rows {
+ 			float: left;
+ 			text-align: right;
+			color: #999;
+			border: solid 1px #999999;
+			background: #cacaca;
+			padding: 0.5em 0.5em 0.5em 0.5em;
+		}	
+		div.rows a:link,
+		div.rows a:visited,
+		div.rows a:hover,
+		div.rows a:active  { 
+			text-decoration:none; 
+			color: inherit;
+		}
+ 		div.code {
+ 			white-space: nowrap;
+			border: solid 1px #999999;
+			background: #fafafa;
+			padding: 0.5em 0.5em 0.5em 3.5em;
 		}
 	</style>
 	<script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
