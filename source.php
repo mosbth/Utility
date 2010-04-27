@@ -165,7 +165,8 @@ if(isset($_GET['file'])) {
 		$content = <<< EOD
 <div class='container'>
 <div class='header'>
-{$i} lines ({$sloc} sloc)
+<!-- {$i} lines ({$sloc} sloc) -->
+{$i} lines
 </div>
 <div class='rows'>
 {$rownums}
@@ -213,7 +214,7 @@ $html = <<< EOD
  		div.header {
 			color: #000;
 			font-size: 1.1em;
-			border: solid 1px #999999;
+			border: solid 1px #999;
 			border-bottom: 0px;
 			background: #cacaca;
 			padding: 0.5em 0.5em 0.5em 0.5em;
@@ -222,7 +223,7 @@ $html = <<< EOD
  			float: left;
  			text-align: right;
 			color: #999;
-			border: solid 1px #999999;
+			border: solid 1px #999;
 			background: #cacaca;
 			padding: 0.5em 0.5em 0.5em 0.5em;
 		}	
@@ -235,8 +236,8 @@ $html = <<< EOD
 		}
  		div.code {
  			white-space: nowrap;
-			border: solid 1px #999999;
-			background: #fafafa;
+			border: solid 1px #999;
+			background: #f9f9f9;
 			padding: 0.5em 0.5em 0.5em 3.5em;
 		}
 	</style>
