@@ -241,7 +241,9 @@ $html = <<< EOD
 			padding: 0.5em 0.5em 0.5em 3.5em;
 		}
 	</style>
-	<script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+	<!--[if IE]> 
+		<script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>		
+	<![endif]-->
 </head>
 <body>
 	{$html}
