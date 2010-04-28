@@ -33,14 +33,13 @@ if (mysqli_connect_error()) {
 //
 // Get values from _GET to enable multiple testcases using same source
 //
-$engine = (isset($_GET['engine'])) ? $_GET['engine'] : 'no';
+$engine = (isset($_GET['engine'])) ? $_GET['engine'] : 'myisam';
 
 $storageEngine = "";
 switch($engine) {
-	case 'myisam': $storageEngine = 'Engine=MyISAM'; break;
 	case 'innodb': $storageEngine = 'Engine=InnoDB'; break;
-	case 'no': 
-	default: $storageEngine = ''; break;
+	case 'myisam': 
+	default: $storageEngine = 'Engine=MyISAM'; break;
 }
 
 
@@ -117,8 +116,8 @@ $htmlSingle .= "<p>Error code: {$mysqli->errno} ({$mysqli->error})</p>";
 $html = "<h1>Create tables using foreign keys and multi_query and setting storage engine InnoDB</h2>";
 $html .= "<p>Verifying MySQL problem: <a href='http://bugs.mysql.com/bug.php?id=40877'>http://bugs.mysql.com/bug.php?id=40877</a></p>";
 $html .= "<p><a href='source.php?dir=&file=" . basename(__FILE__) . "'>Sourcecode</a></p>";
-$html .= "<p><a href='" . basename(__FILE__) . "?engine=no'>Execute testcase using NO storage engine defined.</a><br />";
-$html .= "<a href='" . basename(__FILE__) . "?engine=myisam'>Execute testcase using ENGINE=MyISAM</a><br />";
+//$html .= "<p><a href='" . basename(__FILE__) . "?engine=no'>Execute testcase using NO storage engine defined.</a><br />";
+$html .= "<p><a href='" . basename(__FILE__) . "?engine=myisam'>Execute testcase using ENGINE=MyISAM</a><br />";
 $html .= "<a href='" . basename(__FILE__) . "?engine=innodb'>Execute testcase using ENGINE=InnoDB</a><br /></p>";
 
 $html .= "<h2>Details on environment</h2>";
