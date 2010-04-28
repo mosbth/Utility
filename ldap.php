@@ -28,6 +28,8 @@
 //
 $submit = $_GET['submit'];
 $server = $_GET['server'];
+$server = $_GET['basedn'];
+$server = $_GET['uid'];
 
 
 // -------------------------------------------------------------------------------------------
@@ -41,9 +43,10 @@ $server = $_GET['server'];
 //
 if($submit == 'connect-to-server') {
 
-	$connectStatus .= "<p>Connecting... ";
+	$connectStatus = "<p>Connecting... ";
 	$ds=ldap_connect($server);
-	$connectStatus .= "done. Result is " . $ds . ".</p>";
+	$connectStatus .= "done. Result is '{$ds}'.</p>";
+  ldap_close($ds);
 }
 
 
@@ -53,10 +56,43 @@ if($submit == 'connect-to-server') {
 //
 else if($submit == 'bind-to-server') {
 
-	$bindStatus .= "<p>Connecting and binding... ";
+	$bindStatus = "<p>Connecting and binding... ";
 	$ds=ldap_connect($server);
   $r=ldap_bind($ds);
-	$bindStatus .= "done. Bind result is " . $r . ".</p>";
+	$bindStatus .= "done. Bind result is '{$r}'.</p>";
+  ldap_close($ds);
+}
+
+
+// -------------------------------------------------------------------------------------------
+//
+// Searching for entries with specified uid in LDAP server, display error if failing.
+//
+else if($submit == 'search-uid') {
+
+	$searchStatus = "<p>Connecting and binding... ";
+	$ds=ldap_connect($server);
+  $r=ldap_bind($ds);
+	$searchStatus .= "done. Bind result is '{$r}'.</p>";
+	$searchStatus .= "<p>Searching for 'uid={$uid}'...";
+	$sr=ldap_search($ds, $basedn, "uid={$uid}");
+	$searchStatus .= "done.<br /> Result is '{$sr}'.<br />";
+	$searchStatus .= "Number of entries returned is '" . ldap_count_entries($ds, $sr) . "'<br />";
+	$searchStatus .= "</p>";
+	
+/*
+echo "Getting entries ...<p>";
+    $info = ldap_get_entries($ds, $sr);
+    echo "Data for " . $info["count"] . " items returned:<p>";
+
+    for ($i=0; $i<$info["count"]; $i++) {
+        echo "dn is: " . $info[$i]["dn"] . "<br />";
+        echo "first cn entry is: " . $info[$i]["cn"][0] . "<br />";
+        echo "first email entry is: " . $info[$i]["mail"][0] . "<br /><hr />";
+    }
+*/
+
+  ldap_close($ds);
 }
 
 
@@ -111,6 +147,33 @@ $html = <<<EOD
 </fieldset>
 </form>
 
+<h2 id='search'>Search using "uid=..."</h2>
+<form action='{$_SERVER['PHP_SELF']}' method='GET'>
+<fieldset>
+<table width='600px'>
+<tr>
+<td><label for="server">LDAP-server:</label></td>
+<td style='text-align: right;'><input type='text' name='server' value='{$server}'></td>
+</tr>
+<tr>
+<td><label for="basedn">Base DN (Distinguished Name):</label></td>
+<td style='text-align: right;'><input type='text' name='basedn' value='{$dn}'></td>
+</tr>
+<tr>
+<td><label for="uid">User id (uid):</label></td>
+<td style='text-align: right;'><input type='text' name='uid' value='{$uid}'></td>
+</tr>
+<tr>
+<td colspan='2' style='text-align: right;'>
+<button type='submit' name='submit' value='search-uid'>Search server</button>
+</td>
+</tr>
+</table>
+<p>
+{$bindStatus}
+</p>
+</fieldset>
+</form>
 
 EOD;
 
