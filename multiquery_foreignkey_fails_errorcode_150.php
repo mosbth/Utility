@@ -31,7 +31,22 @@ if (mysqli_connect_error()) {
 
 // -------------------------------------------------------------------------------------------
 //
-// Prepare and perform a SQL query.
+// Get values from _GET to enable multiple testcases using same source
+//
+$engine = (isset($_GET['engine'])) ? $_GET['engine'] : 'no';
+
+$storageEngine = "";
+switch($engine) {
+	case 'myisam': $storageEngine = 'Engine=MyISAM'; break;
+	case 'innodb': $storageEngine = 'Engine=InnoDB'; break;
+	case 'no': 
+	default: $storageEngine = ''; break;
+}
+
+
+// -------------------------------------------------------------------------------------------
+//
+// Prepare the SQL query.
 //
 $tableProfessor = 'test_professor';
 $tableGrade     = 'test_grade';
@@ -41,28 +56,24 @@ DROP TABLE IF EXISTS {$tableGrade};
 DROP TABLE IF EXISTS {$tableProfessor};
 
 CREATE TABLE {$tableProfessor} (
-	idProfessor INT AUTO_INCREMENT NOT NULL PRIMARY KEY,
-	nameProfessor CHAR(40),
-	infoProfessor CHAR(100),
-	pictureProfessor CHAR(100)
-);
+	idProfessor INT UNSIGNED AUTO_INCREMENT NOT NULL PRIMARY KEY
+) {$storageEngine};
 
 CREATE TABLE {$tableGrade} (
-	idGrade INT AUTO_INCREMENT NOT NULL PRIMARY KEY,
-	Grade_idProfessor INT NOT NULL,
-	FOREIGN KEY (Grade_idProfessor) REFERENCES {$tableProfessor} (idProfessor),
-	valueGrade INT,
-	commentGrade CHAR(100),
-	dateGrade DATETIME
-);
-
+	idGrade INT UNSIGNED AUTO_INCREMENT NOT NULL PRIMARY KEY,
+	Grade_idProfessor INT UNSIGNED NOT NULL,
+	FOREIGN KEY (Grade_idProfessor) REFERENCES {$tableProfessor} (idProfessor)
+) {$storageEngine};
 EOD;
 
 
+// -------------------------------------------------------------------------------------------
+//
+// Execute query as multi_query
+//
 $res = $mysqli->multi_query($query)
                     or die("Could not query database");
 
-// -------------------------------------------------------------------------------------------
 //
 // Retrieve and ignore the results from the above query
 // Some may succed and some may fail. Lets count the number of succeded
@@ -74,24 +85,49 @@ do {
 	$statements++;
 } while($mysqli->next_result());
 
+$htmlMulti  = "<h2>Testcase 1: multi_query()</h2>";
+$htmlMulti .= "<p>Query=<br/><pre>{$query}</pre></p>";
+$htmlMulti .= "<p>Antal lyckade statements: {$statements}</p>";
+$htmlMulti .= "<p>Error code: {$mysqli->errno} ({$mysqli->error})</p>";
+
+
+// -------------------------------------------------------------------------------------------
+//
+// Execute query as several queries
+//
+$queries = explode(';', $query);
+
+$htmlSingle .= "<h2>Testcase 2: explode() &amp; query()</h2>";
+$statements = 0;
+foreach($queries as $val) {
+	if(empty($val)) break;
+	$res = $mysqli->query($val);
+	$statements += (empty($res) ? 0 : 1);
+	$htmlSingle .= "<p><hr>Query:<pre>{$val}</pre>Results: {$res}</p>";
+}
+
+$htmlSingle .= "<p>Antal lyckade statements: {$statements}</p>";
+$htmlSingle .= "<p>Error code: {$mysqli->errno} ({$mysqli->error})</p>";
+
 
 // -------------------------------------------------------------------------------------------
 //
 // Prepare the text
 //
 $html = "<h1>Create tables using foreign keys and multi_query</h2>";
-$html .= "<p>Verifying MySQL problem: <a href='http://bugs.mysql.com/bug.php?id=40877'>http://bugs.mysql.com/bug.php?id=40877</a>";
+$html .= "<p>Verifying MySQL problem: <a href='http://bugs.mysql.com/bug.php?id=40877'>http://bugs.mysql.com/bug.php?id=40877</a></p>";
+$html .= "<p><a href='source.php?dir=&file=" . basename(__FILE__) . "'>Sourcecode</a></p>";
+$html .= "<p><a href='" . basename(__FILE__) . "?engine=no'>Execute testcase using NO storage engine defined.</a><br />";
+$html .= "<a href='" . basename(__FILE__) . "?engine=myisam'>Execute testcase using ENGINE=MyISAM</a><br />";
+$html .= "<a href='" . basename(__FILE__) . "?engine=innodb'>Execute testcase using ENGINE=InnoDB</a><br /></p>";
 
 $html .= "<h2>Details on environment</h2>";
 $html .= "<p>PHP is: " . phpversion() . "</p>";
 $html .= "<p>MySQL client is: " . mysqli_get_client_version() . "</p>";
 $html .= "<p>MySQL server is: " . $mysqli->server_info . "</p>";
 
-$html .= "<h2>Testcase</h2>";
-$html .= "<p>Query=<br/><pre>{$query}</pre></p>";
-$html .= "<p>Antal lyckade statements: {$statements}</p>";
-$html .= "<p>Error code: {$mysqli->errno} ({$mysqli->error})</p>";
-$html .= "<a href='source.php?dir=&file=" . basename(__FILE__) . "'>Sourcecode</a>";
+$html .= "<p>{$htmlMulti}</p>";
+$html .= "<p>{$htmlSingle}</p>";
 
 $mysqli->close();
 
