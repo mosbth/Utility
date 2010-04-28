@@ -170,7 +170,7 @@ $html = <<<EOD
 </tr>
 </table>
 <p>
-{$bindStatus}
+{$searchStatus}
 </p>
 </fieldset>
 </form>
