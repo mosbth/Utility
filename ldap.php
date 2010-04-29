@@ -20,16 +20,71 @@
 // Settings for this pagecontroller. Review and change these settings to match your own
 // environment.
 //
+$LDAP_DISABLED=true;
+if(is_readable('config.php')) {	require_once('config.php'); }
 
 
 // -------------------------------------------------------------------------------------------
 //
-// Get the input variables from GET.
+// Function to read entries from LDAP. Return results as string.
+//	
+function get_entries($ds, $sr) {
+
+	$res = "<p>Getting entries...";
+	$info = ldap_get_entries($ds, $sr);
+  $res .= "done. Data for '{$info['count']}' items returned:</p>";
+
+	for ($i=0; $i<$info["count"]; $i++) {
+		$res .= "<p>";
+		$res .= "dn: {$info[$i]['dn']} ({$info[$i]['count']} )<br />";
+		$res .= "cn[0]: {$info[$i]['cn'][0]} <br />";
+		$res .= "sn[0]: {$info[$i]['sn'][0]}<br />";
+		$res .= "uid[0]: {$info[$i]['uid'][0]}<br />";
+		$res .= "mail[0]: {$info[$i]['mail'][0]}<br />";
+		$res .= "<p>";
+		//echo "<pre>"; print_r($info[$i]); echo "</pre>";
+	}
+	return $res;
+}
+
+
+// -------------------------------------------------------------------------------------------
 //
-$submit = $_GET['submit'];
-$server = $_GET['server'];
-$server = $_GET['basedn'];
-$server = $_GET['uid'];
+// Function to escape special characters when using LDAP.
+// Got it from the PHP manual in the user comments.
+// http://www.php.net/manual/en/function.ldap-search.php#90158
+//
+function ldap_escape($str, $for_dn = false) {
+    // see:
+    // RFC2254
+    // http://msdn.microsoft.com/en-us/library/ms675768(VS.85).aspx
+    // http://www-03.ibm.com/systems/i/software/ldap/underdn.html       
+       
+    if  ($for_dn)
+        $metaChars = array(',','=', '+', '<','>',';', '\\', '"', '#');
+    else
+        $metaChars = array('*', '(', ')', '\\', chr(0));
+
+    $quotedMetaChars = array();
+    foreach ($metaChars as $key => $value) $quotedMetaChars[$key] = '\\'.str_pad(dechex(ord($value)), 2, '0');
+    $str=str_replace($metaChars,$quotedMetaChars,$str); //replace them
+    return ($str);
+} 
+
+
+// -------------------------------------------------------------------------------------------
+//
+// Get the input variables from POST and check/escape them properly.
+//
+$submit 	= strip_tags($_POST['submit']);
+$server 	= strip_tags($_POST['server']);
+$basedn 	= ldap_escape($_POST['basedn'], false);
+$uid			= strip_tags($_POST['uid']);
+$password	= strip_tags(ldap_escape($_POST['password']));
+
+//$basedn 	= strip_tags($_POST['basedn']);
+//$uid			= strip_tags($_POST['uid']);
+//$password	= strip_tags($_POST['password']);
 
 
 // -------------------------------------------------------------------------------------------
@@ -37,14 +92,20 @@ $server = $_GET['uid'];
 // Do some action depending on whats submitted. 
 //
 
+if($LDAP_DISABLED) {
+	$disabledStatus = "\$LDAP_DISABLED=true; Change this in the sourcefile or in config.php to enable this script.";
+}
+
+
 // -------------------------------------------------------------------------------------------
 //
 // Connect to a LDAP server, display error if failing.
 //
-if($submit == 'connect-to-server') {
+else if($submit == 'connect-to-server') {
 
 	$connectStatus = "<p>Connecting... ";
-	$ds=ldap_connect($server);
+	ldap_set_option($ds, LDAP_OPT_PROTOCOL_VERSION, 3);
+	$ds = ldap_connect($server);
 	$connectStatus .= "done. Result is '{$ds}'.</p>";
   ldap_close($ds);
 }
@@ -57,8 +118,9 @@ if($submit == 'connect-to-server') {
 else if($submit == 'bind-to-server') {
 
 	$bindStatus = "<p>Connecting and binding... ";
-	$ds=ldap_connect($server);
-  $r=ldap_bind($ds);
+	ldap_set_option($ds, LDAP_OPT_PROTOCOL_VERSION, 3);
+	$ds	= ldap_connect($server);
+  $r	= ldap_bind($ds);
 	$bindStatus .= "done. Bind result is '{$r}'.</p>";
   ldap_close($ds);
 }
@@ -71,27 +133,41 @@ else if($submit == 'bind-to-server') {
 else if($submit == 'search-uid') {
 
 	$searchStatus = "<p>Connecting and binding... ";
-	$ds=ldap_connect($server);
-  $r=ldap_bind($ds);
+	ldap_set_option($ds, LDAP_OPT_PROTOCOL_VERSION, 3);
+	$ds	= ldap_connect($server);
+  $r	= ldap_bind($ds);
 	$searchStatus .= "done. Bind result is '{$r}'.</p>";
 	$searchStatus .= "<p>Searching for 'uid={$uid}'...";
-	$sr=ldap_search($ds, $basedn, "uid={$uid}");
+	$sr = ldap_search($ds, $basedn, "uid={$uid}");
 	$searchStatus .= "done.<br /> Result is '{$sr}'.<br />";
 	$searchStatus .= "Number of entries returned is '" . ldap_count_entries($ds, $sr) . "'<br />";
 	$searchStatus .= "</p>";
-	
-/*
-echo "Getting entries ...<p>";
-    $info = ldap_get_entries($ds, $sr);
-    echo "Data for " . $info["count"] . " items returned:<p>";
+	$searchStatus .= get_entries($ds, $sr);
+  ldap_close($ds);
+}
 
-    for ($i=0; $i<$info["count"]; $i++) {
-        echo "dn is: " . $info[$i]["dn"] . "<br />";
-        echo "first cn entry is: " . $info[$i]["cn"][0] . "<br />";
-        echo "first email entry is: " . $info[$i]["mail"][0] . "<br /><hr />";
-    }
-*/
 
+// -------------------------------------------------------------------------------------------
+//
+// Checking an uid to see if the password match, authentication of user.
+//
+else if($submit == 'check-password') {
+
+	$passwordStatus = "<p>Connecting and binding... ";
+	ldap_set_option($ds, LDAP_OPT_PROTOCOL_VERSION, 3);
+	$ds	= ldap_connect($server);
+  $r	= ldap_bind($ds);
+	$passwordStatus .= "done. Bind result is '{$r}'.</p>";
+	$passwordStatus .= "<p>Searching for 'uid={$uid}'...";
+	$sr	= ldap_search($ds, $basedn, "uid={$uid}");
+	$passwordStatus .= "done.<br /> Result is '{$sr}'.<br />";
+	$passwordStatus .= "Number of entries returned is '" . ldap_count_entries($ds, $sr) . "'<br />";
+	$passwordStatus .= "</p>";
+	$passwordStatus .= "<p>Binding using dn and password...";
+	$info	=	ldap_get_entries($ds, $sr);
+	$r		=	@ldap_bind($ds, $info[0]['dn'], $password);
+  $passwordStatus .= "done. Result is '{$r}'. User IS " . ($r && $password != '' ? '' : 'NOT') . " authenticated.</p>";
+	$passwordStatus .= get_entries($ds, $sr);
   ldap_close($ds);
 }
 
@@ -100,15 +176,20 @@ echo "Getting entries ...<p>";
 //
 // Page specific code
 //
+$sourcecode = "<p><a href='source.php?dir=&file=" . basename(__FILE__) . "'>Sourcecode</a></p>";
 
 $html = <<<EOD
 <h1>Various examples on PHP and LDAP</h1>
 <p>
---
+Shows how to user PHP and LDAP to communicate with a LDAP server. 
 </p>
+<p>
+{$disabledStatus}
+</p>
+{$sourcecode}
 
 <h2 id='connect'>Connecting to an LDAP-server</h2>
-<form action='{$_SERVER['PHP_SELF']}' method='GET'>
+<form action='{$_SERVER['PHP_SELF']}' method='POST'>
 <fieldset>
 <table width='600px'>
 <tr>
@@ -128,7 +209,7 @@ $html = <<<EOD
 </form>
 
 <h2 id='bind'>Connect and bind to an LDAP-server</h2>
-<form action='{$_SERVER['PHP_SELF']}' method='GET'>
+<form action='{$_SERVER['PHP_SELF']}' method='POST'>
 <fieldset>
 <table width='600px'>
 <tr>
@@ -148,7 +229,7 @@ $html = <<<EOD
 </form>
 
 <h2 id='search'>Search using "uid=..."</h2>
-<form action='{$_SERVER['PHP_SELF']}' method='GET'>
+<form action='{$_SERVER['PHP_SELF']}' method='POST'>
 <fieldset>
 <table width='600px'>
 <tr>
@@ -157,7 +238,7 @@ $html = <<<EOD
 </tr>
 <tr>
 <td><label for="basedn">Base DN (Distinguished Name):</label></td>
-<td style='text-align: right;'><input type='text' name='basedn' value='{$dn}'></td>
+<td style='text-align: right;'><input type='text' name='basedn' value='{$basedn}'></td>
 </tr>
 <tr>
 <td><label for="uid">User id (uid):</label></td>
@@ -170,7 +251,39 @@ $html = <<<EOD
 </tr>
 </table>
 <p>
-{$bindStatus}
+{$searchStatus}
+</p>
+</fieldset>
+</form>
+
+<h2 id='search'>Authenticate user</h2>
+<form action='{$_SERVER['PHP_SELF']}' method='POST'>
+<fieldset>
+<table width='600px'>
+<tr>
+<td><label for="server">LDAP-server:</label></td>
+<td style='text-align: right;'><input type='text' name='server' value='{$server}'></td>
+</tr>
+<tr>
+<td><label for="basedn">Base DN (Distinguished Name):</label></td>
+<td style='text-align: right;'><input type='text' name='basedn' value='{$basedn}'></td>
+</tr>
+<tr>
+<td><label for="uid">User id (uid):</label></td>
+<td style='text-align: right;'><input type='text' name='uid' value='{$uid}'></td>
+</tr>
+<tr>
+<td><label for="uid">Password:</label></td>
+<td style='text-align: right;'><input type='password' name='password' value='{$password}'></td>
+</tr>
+<tr>
+<td colspan='2' style='text-align: right;'>
+<button type='submit' name='submit' value='check-password'>Check password</button>
+</td>
+</tr>
+</table>
+<p>
+{$passwordStatus}
 </p>
 </fieldset>
 </form>

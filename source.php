@@ -209,7 +209,7 @@ $html = <<< EOD
  		div.container {
 			min-width: 40em;
 			font-family: monospace;
-			font-size: 0.8em;
+			font-size: 1em;
  		}
  		div.header {
 			color: #000;
