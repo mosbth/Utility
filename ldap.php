@@ -273,7 +273,7 @@ Shows how to user PHP and LDAP to communicate with a LDAP server.
 <td style='text-align: right;'><input type='text' name='uid' value='{$uid}'></td>
 </tr>
 <tr>
-<td><label for="uid">Password:</label></td>
+<td><label for="password">Password:</label></td>
 <td style='text-align: right;'><input type='password' name='password' value='{$password}'></td>
 </tr>
 <tr>
