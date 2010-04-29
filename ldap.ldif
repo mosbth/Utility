@@ -11,7 +11,7 @@
 # ldapsearch -x -b '' -s base '(objectclass=*)' namingContexts
 #
 # Add entries from this file
-# ldapadd -x -D "cn=Manager,dc=dbwebb,dc=se" -W -f ldap_ldif.txt
+# ldapadd -x -D "cn=Manager,dc=dbwebb,dc=se" -W -f ldap.ldif
 # ldapmodify
 #
 # Did it work to add entries?
