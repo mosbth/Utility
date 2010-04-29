@@ -252,6 +252,7 @@ Shows how to user PHP and LDAP to communicate with a LDAP server.
 </table>
 <p>
 {$searchStatus}
+<<<<<<< HEAD
 </p>
 </fieldset>
 </form>
@@ -284,6 +285,8 @@ Shows how to user PHP and LDAP to communicate with a LDAP server.
 </table>
 <p>
 {$passwordStatus}
+=======
+>>>>>>> 9428837d811dd70960f01ad1b6d2f477556df10d
 </p>
 </fieldset>
 </form>
