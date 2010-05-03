@@ -20,6 +20,7 @@
 // Settings for this pagecontroller. Review and change these settings to match your own
 // environment.
 //
+error_reporting(E_ALL);
 $LDAP_DISABLED=true;
 if(is_readable('config.php')) {	require_once('config.php'); }
 
@@ -86,6 +87,12 @@ $password	= strip_tags(ldap_escape($_POST['password']));
 //$uid			= strip_tags($_POST['uid']);
 //$password	= strip_tags($_POST['password']);
 
+$disabledStatus = "";
+$connectStatus 	= "";
+$bindStatus 		= "";
+$searchStatus 	= "";
+$passwordStatus = "";
+
 
 // -------------------------------------------------------------------------------------------
 //
@@ -104,8 +111,8 @@ if($LDAP_DISABLED) {
 else if($submit == 'connect-to-server') {
 
 	$connectStatus = "<p>Connecting... ";
-	ldap_set_option($ds, LDAP_OPT_PROTOCOL_VERSION, 3);
 	$ds = ldap_connect($server);
+	ldap_set_option($ds, LDAP_OPT_PROTOCOL_VERSION, 3);
 	$connectStatus .= "done. Result is '{$ds}'.</p>";
   ldap_close($ds);
 }
@@ -118,8 +125,8 @@ else if($submit == 'connect-to-server') {
 else if($submit == 'bind-to-server') {
 
 	$bindStatus = "<p>Connecting and binding... ";
-	ldap_set_option($ds, LDAP_OPT_PROTOCOL_VERSION, 3);
 	$ds	= ldap_connect($server);
+	ldap_set_option($ds, LDAP_OPT_PROTOCOL_VERSION, 3);
   $r	= ldap_bind($ds);
 	$bindStatus .= "done. Bind result is '{$r}'.</p>";
   ldap_close($ds);
@@ -133,8 +140,8 @@ else if($submit == 'bind-to-server') {
 else if($submit == 'search-uid') {
 
 	$searchStatus = "<p>Connecting and binding... ";
-	ldap_set_option($ds, LDAP_OPT_PROTOCOL_VERSION, 3);
 	$ds	= ldap_connect($server);
+	ldap_set_option($ds, LDAP_OPT_PROTOCOL_VERSION, 3);
   $r	= ldap_bind($ds);
 	$searchStatus .= "done. Bind result is '{$r}'.</p>";
 	$searchStatus .= "<p>Searching for 'uid={$uid}'...";
@@ -154,8 +161,8 @@ else if($submit == 'search-uid') {
 else if($submit == 'check-password') {
 
 	$passwordStatus = "<p>Connecting and binding... ";
-	ldap_set_option($ds, LDAP_OPT_PROTOCOL_VERSION, 3);
 	$ds	= ldap_connect($server);
+	ldap_set_option($ds, LDAP_OPT_PROTOCOL_VERSION, 3);
   $r	= ldap_bind($ds);
 	$passwordStatus .= "done. Bind result is '{$r}'.</p>";
 	$passwordStatus .= "<p>Searching for 'uid={$uid}'...";

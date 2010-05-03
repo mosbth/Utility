@@ -21,6 +21,7 @@
 // Settings for this pagecontroller. Review and change these settings to match your own
 // environment.
 //
+error_reporting(E_ALL);
 
 // Separator between directories and files, change between Unix/Windows
 $SEPARATOR = DIRECTORY_SEPARATOR; 	// Using built-in PHP-constant for separator.
