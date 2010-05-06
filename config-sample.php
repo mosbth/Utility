@@ -19,13 +19,22 @@ mos@sweet:
 */
 //
 
+//
 // Database
+//
 define('DB_USER',       'xxxxxx');             		// <-- mysql db user
 define('DB_PASSWORD',   'xxxxxx');     			// <-- mysql db password
 define('DB_DATABASE',   'xxxxxx');  	   		// <-- mysql db name
 define('DB_HOST',       'blu-ray.student.bth.se');  // <-- mysql server host
 
+//
 // LDAP
+//
 $LDAP_DISABLED=true;  // true or false
+
+//
+// SQL AID
+//
+$SQLAID_DISABLED=true; // true or false
 
 ?>

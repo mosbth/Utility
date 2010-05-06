@@ -7,6 +7,8 @@
 //
 // Description: Example code on LDAP.
 //
+// The file is disabled by default for security reasons.
+//
 // Author: Mikael Roos, mos@bth.se
 //
 // Change history:

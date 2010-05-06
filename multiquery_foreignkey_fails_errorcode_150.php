@@ -113,7 +113,7 @@ $htmlSingle .= "<p>Error code: {$mysqli->errno} ({$mysqli->error})</p>";
 //
 // Prepare the text
 //
-$html = "<h1>Create tables using foreign keys and multi_query and setting storage engine InnoDB</h2>";
+$html = "<h1>Create tables using foreign keys and multi_query and setting storage engine InnoDB</h1>";
 $html .= "<p>Verifying MySQL problem: <a href='http://bugs.mysql.com/bug.php?id=40877'>http://bugs.mysql.com/bug.php?id=40877</a></p>";
 $html .= "<p><a href='source.php?dir=&file=" . basename(__FILE__) . "'>Sourcecode</a></p>";
 //$html .= "<p><a href='" . basename(__FILE__) . "?engine=no'>Execute testcase using NO storage engine defined.</a><br />";
