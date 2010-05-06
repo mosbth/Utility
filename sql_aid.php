@@ -11,15 +11,19 @@
 // This is mainly to be used for testing purpose and support to developer who needs assistence
 // with SQL-queries.
 //
-// The file is disabled by default for security reasons.
+// The script is disabled by default for security reasons.
 //
 // Author: Mikael Roos, mos@bth.se
+//
+// Revision history:
+//
+// 2010-05-06: Initial effort to put it together.
 //
 
 // -------------------------------------------------------------------------------------------
 //
-// Settings for this pagecontroller. Review and change these settings to match your own
-// environment.
+// Disable by default, change below or in the config.php. Database settings should reside in 
+// config.php.
 //
 error_reporting(E_ALL);
 $SQLAID_DISABLED=true;
@@ -32,19 +36,41 @@ if(is_readable('config.php')) {	require_once('config.php'); }
 // Save the current value to file.
 //
 $submit		= isset($_POST['submit']) ? $_POST['submit'] : '';
-$query		= isset($_POST['query']) ? $_POST['query'] : '';
-$clear		= isset($_GET['clear']);
-$filename = "tmp/" . basename(__FILE__, '.php') . '.txt';
+$case			= isset($_POST['case']) 	? strip_tags($_POST['case']) : (isset($_GET['case']) ? strip_tags($_GET['case']) : '');
+$query		= isset($_POST['query']) 	? strip_tags($_POST['query']) : '';
 
 // Fix html encoded issues
 $query = str_replace("\'", "'", $query);
 $query = str_replace('\"', '"', $query);
 $query = str_replace("\\\\", "\\", $query);
 
+$status = "";
+// Create new testcase
+if($submit == 'new-case') {
+	$case = uniqid(basename(__FILE__, '.php'));
+	$status = "Created a new case with id={$case}";
+	$query = "";
+}
+
+// Copy new testcase
+if($submit == 'copy-case') {
+	$newcase = uniqid(basename(__FILE__, '.php'));
+	$r = copy("tmp/{$case}.txt", "tmp/{$newcase}.txt");
+	if($r) {
+		$status = "Created a new case with id={$newcase}, copied content from case with id={$case}";
+	} else {
+		$status = "Failed to copy case id={$case} to new case id={$newcase}";
+	}
+	$case = $newcase;
+}
+
+$filename = "tmp/{$case}.txt";
+
 // Write to file
-if($submit == 'save-query') {
+if($submit == 'save-case') {
 	file_put_contents($filename, $query) 
 		or die("<p>WARNING: FAILED WRITING TO FILE '{$filename}'.<br />Perhaps create tmp-directory and allow webserver to write to it?'</p>");
+	$status = "Saved case with id={$case}";
 }
 
 // $query is empty, read content from file, if available
@@ -54,10 +80,33 @@ if(empty($query) && is_readable($filename)) {
 }
 
 // If clear then remove the file, clean up
-if($clear && is_readable($filename)) {
-	unlink($filename);
+if($submit == 'remove-case') {
+	@unlink($filename);
+	$status = "Removed the case with id={$case}";
+	$case=""; $query="";
 }
 
+// Set status on buttons depending on state
+$execute= "";
+$save		= "";
+$new		= "";
+$copy		= "";
+$remove	= "";
+$link		= "";
+if(empty($case)) {
+	$execute= "disabled='disabled'";
+	$save		= "disabled='disabled'";
+	$copy		= "disabled='disabled'";
+	$remove	= "disabled='disabled'";
+	$link		= "style='display: none;'";
+}
+if($case == "" . basename(__FILE__, '.php') . "sample") {
+	$save		= "disabled='disabled'";
+	$remove	= "disabled='disabled'";
+}
+if(empty($query)) {
+	$execute= "disabled='disabled'";
+}
 
 // -------------------------------------------------------------------------------------------
 //
@@ -94,8 +143,9 @@ if($submit == 'execute-sql' && !empty($query)) {
 		$htmlMulti .= "<p>Statement " . $statements++ . ":</p>";
 		if(is_object($res)) {
 			$htmlMulti .= "Resultset has " . $res->num_rows . " rows.<pre>";
+			$i=1;
 			while ($row = $res->fetch_assoc()) {
-				$htmlMulti .= "" . implode(', ', $row) . "\n";
+				$htmlMulti .= "Row " . $i++ . ": " . implode(', ', $row) . "\n";
 			}
 			$htmlMulti .= "</pre>";
 		}		
@@ -103,26 +153,6 @@ if($submit == 'execute-sql' && !empty($query)) {
 
 	$htmlMulti .= "<p>Successful statements: {$statements}</p>";
 	$htmlMulti .= "<p>Error code: {$mysqli->errno} ({$mysqli->error})</p>";
-
-/*
-	// -------------------------------------------------------------------------------------------
-	//
-	// Execute query as several queries
-	//
-	$queries = explode(';', $query);
-
-	$htmlSingle .= "<h2>Testcase 2: explode() &amp; query()</h2>";
-	$statements = 0;
-	foreach($queries as $val) {
-		if(empty($val)) break;
-		$res = $mysqli->query($val);
-		$statements += (empty($res) ? 0 : 1);
-		$htmlSingle .= "<p><hr>Query:<pre>{$val}</pre>Results: {$res}</p>";
-	}
-
-	$htmlSingle .= "<p>Antal lyckade statements: {$statements}</p>";
-	$htmlSingle .= "<p>Error code: {$mysqli->errno} ({$mysqli->error})</p>";
-*/
 }
 
 
@@ -135,24 +165,31 @@ $script = basename(__FILE__);
 $html = <<<EOD
 <h1>Create a SQL testcase</h1>
 <p>
-Create a new testcase and save the query. Send the link to a friend and ask for assistance.
+Create a new testcase and save the query. Send the link of the testcase to a friend and ask for assistance.
 </p>
 <p>
 [<a href='{$script}'>Link to this service</a>] 
 [<a href='source.php?dir=&file={$script}'>Sourcecode</a>] 
+[<a href='http://github.com/mosbth/Utility/blob/master/sql_aid.php'>GitHub</a>] 
 </p>
 
-<fieldset><legend><em>Testcase: </em></legend>
+<fieldset>
+<legend><em>Testcase: {$case}</em></legend>
 <form action='{$_SERVER['PHP_SELF']}' method='POST'>
-<p>
-[<a href='{$script}'>Link to this testcase</a>] 
-[<a href='{$script}?clear=clear'>Remove this testcase</a>] 
-</p>
-<textarea cols='80' rows='20' name='query'>{$query}</textarea>
+<input type='hidden' name='case' value='{$case}'>
+<textarea style='width: 100%; white-space: nowrap;' rows='30' name='query'>{$query}</textarea>
 <br />
-<button type='submit' name='submit' value='execute-sql' title='Execute the SQL code and display the result'>Execute SQL</button>
-<button type='submit' name='submit' value='save-sql' title='Save the current SQL code to this testcase-file.'>Save SQL</button>
+<button {$execute} type='submit' name='submit' value='execute-sql' title='Execute the SQL code and display the result'>Execute SQL</button>
+<button {$save} type='submit' name='submit' value='save-case' title='Save the current SQL code to this testcase-file.'>Save testcase</button>
+<button {$new} type='submit' name='submit' value='new-case' title='Make a new testcase.'>New testcase</button>
+<button {$copy} type='submit' name='submit' value='copy-case' title='Make a new copy of this testcase.'>Copy testcase</button>
+<button {$remove} type='submit' name='submit' value='remove-case' title='Remove this testcase.'>Remove testcase</button>
+<p><em>{$status}</em></p>
 </form>
+<p>
+[<a {$link} title='Send this link to a friend to share it.' href='{$script}?case={$case}'>Link to this testcase</a>]  
+[<a title='View an example of an sample case.' href='{$script}?case=sql_aidsample'>Try a sample testcase</a>] 
+</p>
 <p>{$htmlMulti}</p>
 </fieldset>
 EOD;
@@ -170,7 +207,7 @@ $mysqli->close();
 //
 // Create and print out the html-page
 //
-$title = "SQL aid and assitance";
+$title = "SQL aid and assistance";
 $charset = "utf-8";
 $language = "en";
  
