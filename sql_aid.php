@@ -120,7 +120,10 @@ if (mysqli_connect_error()) {
 
 $htmlMulti 	= "";
 
-if($submit == 'execute-sql' && !empty($query)) {
+if($SQLAID_DISABLED) {
+	$disabledStatus = "\$SQLAID_DISABLED=true; Change this in the sourcefile or in config.php to enable this script.";
+}
+else if($submit == 'execute-sql' && !empty($query)) {
 
 	// -------------------------------------------------------------------------------------------
 	//
@@ -165,6 +168,9 @@ $html = <<<EOD
 <h1>Create a SQL testcase</h1>
 <p>
 Create a new testcase and save the query. Send the link of the testcase to a friend and ask for assistance.
+</p>
+<p>
+{$disabledStatus}
 </p>
 <p>
 [<a href='{$script}'>Link to this service</a>] 

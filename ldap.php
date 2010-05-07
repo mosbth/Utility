@@ -185,17 +185,21 @@ else if($submit == 'check-password') {
 //
 // Page specific code
 //
-$sourcecode = "<p><a href='source.php?dir=&file=" . basename(__FILE__) . "'>Sourcecode</a></p>";
+$script = basename(__FILE__);
 
 $html = <<<EOD
 <h1>Various examples on PHP and LDAP</h1>
 <p>
-Shows how to user PHP and LDAP to communicate with a LDAP server. 
+Shows how to use PHP and LDAP to communicate with a LDAP server. 
 </p>
 <p>
 {$disabledStatus}
 </p>
-{$sourcecode}
+<p>
+[<a href='{$script}'>Link to this service</a>] 
+[<a href='source.php?dir=&file={$script}'>Sourcecode</a>] 
+[<a href='http://github.com/mosbth/Utility/blob/master/ldap.php'>GitHub</a>] 
+</p>
 
 <h2 id='connect'>Connecting to an LDAP-server</h2>
 <form action='{$_SERVER['PHP_SELF']}' method='POST'>
