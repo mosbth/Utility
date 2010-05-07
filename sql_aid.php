@@ -119,7 +119,6 @@ if (mysqli_connect_error()) {
 }
 
 $htmlMulti 	= "";
-$htmlSingle = "";
 
 if($submit == 'execute-sql' && !empty($query)) {
 
