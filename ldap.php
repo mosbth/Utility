@@ -79,11 +79,11 @@ function ldap_escape($str, $for_dn = false) {
 //
 // Get the input variables from POST and check/escape them properly.
 //
-$submit 	= strip_tags($_POST['submit']);
-$server 	= strip_tags($_POST['server']);
-$basedn 	= ldap_escape($_POST['basedn'], false);
-$uid			= strip_tags($_POST['uid']);
-$password	= strip_tags(ldap_escape($_POST['password']));
+$submit 	= strip_tags(isset($_POST['submit']) ? $_POST['submit'] : '');
+$server 	= strip_tags(isset($_POST['server']) ? $_POST['server']: '');
+$basedn 	= ldap_escape(isset($_POST['basedn']) ? $_POST['basedn'] : '', false);
+$uid			= strip_tags(isset($_POST['uid']) ? $_POST['uid'] : '');
+$password	= strip_tags(ldap_escape(isset($_POST['password']) ? $_POST['password'] : ''));
 
 //$basedn 	= strip_tags($_POST['basedn']);
 //$uid			= strip_tags($_POST['uid']);
