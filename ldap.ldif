@@ -20,7 +20,8 @@
 # ldapvi
 # ldapvi -D "cn=Manager,dc=dbwebb,dc=se"
 #
-# slappasswd -v
+# Create passwords
+# slappasswd -v -h "{MD5}"
 #
 
 # Root object
@@ -54,3 +55,22 @@ mail: doe@bth.se
 uid: doe
 #userPassword: doe
 userPassword: {SSHA}s9mJ3Rw2mVm7mdiJYkXaZpTbvkeqaF91
+
+# MegaMic
+dn: cn=MegaMic Da Man,dc=dbwebb,dc=se
+objectclass: inetorgperson
+cn: MegaMic Da Man
+sn: Da Man
+mail: me@megamic.se
+uid: megamic
+userPassword: {MD5}vvtzx9srVQosqPf0AICPHg==
+
+# Micke Moped
+dn: cn=Micke Moped,dc=dbwebb,dc=se
+objectclass: inetorgperson
+cn: Micke Moped
+sn: Moped
+mail: moped@megamic.se
+uid: moped
+userPassword: {MD5}gEBGL8nGXTrQRe7Gv5lOjQ==
+
