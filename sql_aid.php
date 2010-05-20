@@ -120,6 +120,7 @@ if (mysqli_connect_error()) {
 
 $htmlMulti 	= "";
 
+$disabledStatus="";
 if($SQLAID_DISABLED) {
 	$disabledStatus = "\$SQLAID_DISABLED=true; Change this in the sourcefile or in config.php to enable this script.";
 }
