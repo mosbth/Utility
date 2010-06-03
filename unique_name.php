@@ -21,7 +21,10 @@
 //
 // Present a way to view the file.
 // 
-echo "<a href='source.php?'>Source</a> | ";
+echo "<p>";
+echo "<a href='source.php??dir=&file=unique_name.php'>Source</a> | ";
+echo "<a href='http://github.com/mosbth/Utility/blob/master/unique_name.php'>On GitHub</a> | ";
+echo "</p>";
 
 // -------------------------------------------------------------------------------------------
 //
@@ -49,6 +52,57 @@ echo $hash . "<br />";
 //
 // http://www.snippetit.com/2009/04/php-short-url-algorithm-implementation/
 //
+function shorturl($input) {
+  $base32 = array (
+    'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h',
+    'i', 'j', 'k', '9', 'm', 'n', '6', 'p',
+    'q', 'r', 's', 't', 'u', 'v', 'w', 'x',
+    'y', 'z', '7', '8', '2', '3', '4', '5'
+    );
+
+  $hex = md5($input);
+  $hexLen = strlen($hex);
+  $subHexLen = $hexLen / 8;
+  $output = array();
+
+  for ($i = 0; $i < $subHexLen; $i++) {
+    $subHex = substr ($hex, $i * 8, 8);
+    $int = 0x3FFFFFFF & (1 * ('0x'.$subHex));
+    $out = '';
+
+    for ($j = 0; $j < 6; $j++) {
+      $val = 0x0000001F & $int;
+      $out .= $base32[$val];
+      $int = $int >> 5;
+    }
+
+    $output[] = $out;
+  }
+
+  return $output;
+}
+
+$input = 'http://dev.phpersia.org/persia';
+$output = shorturl($input);
+
+echo "<pre>";
+echo "Input  : $input\n";
+echo "Output : {$output[0]}\n";
+echo "         {$output[1]}\n";
+echo "         {$output[2]}\n";
+echo "         {$output[3]}\n";
+echo "\n";
+
+$input = 'http://dev.phpersia.org/utility';
+$output = shorturl($input);
+
+echo "Input  : $input\n";
+echo "Output : {$output[0]}\n";
+echo "         {$output[1]}\n";
+echo "         {$output[2]}\n";
+echo "         {$output[3]}\n";
+echo "\n";
+echo "</pre>";
 
 
 ?>
