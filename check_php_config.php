@@ -14,12 +14,13 @@
 // 
 //
 
+$html="";
+
 // -------------------------------------------------------------------------------------------
 //
 // Error reporting
 //
-$level = error_reporting();
-$html = "<p>Current level of error-reporting is: {$level}</p>";
+$html .= "<p>Current level of error-reporting is: " . error_reporting() . "</p>";
 
 
 // -------------------------------------------------------------------------------------------
@@ -27,9 +28,9 @@ $html = "<p>Current level of error-reporting is: {$level}</p>";
 // Show output from phpinfo() if enabled
 //
 if(phpinfo()) {
-	$html = @phpinfo();
+	$html .= @phpinfo();
 } else {
-	$html = "<p>phpinfo() is disabled.</p>";
+	$html .= "<p>phpinfo() is disabled.</p>";
 }
 
 
