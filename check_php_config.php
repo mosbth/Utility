@@ -20,14 +20,39 @@ $html="";
 //
 // Error reporting
 //
+function error_level_tostring($intval, $separator)
+{
+    $errorlevels = array(
+        2047 => 'E_ALL',
+        1024 => 'E_USER_NOTICE',
+        512 => 'E_USER_WARNING',
+        256 => 'E_USER_ERROR',
+        128 => 'E_COMPILE_WARNING',
+        64 => 'E_COMPILE_ERROR',
+        32 => 'E_CORE_WARNING',
+        16 => 'E_CORE_ERROR',
+        8 => 'E_NOTICE',
+        4 => 'E_PARSE',
+        2 => 'E_WARNING',
+        1 => 'E_ERROR');
+    $result = '';
+    foreach($errorlevels as $number => $name)
+    {
+        if (($intval & $number) == $number) {
+            $result .= ($result != '' ? $separator : '').$name; }
+    }
+    return $result;
+}
+
 $html .= "<p>Current level of error-reporting is: " . error_reporting() . "</p>";
+$html .= "<p>This means: " .  error_level_tostring(error_reporting(), ' ') . "</p>";
 
 
 // -------------------------------------------------------------------------------------------
 //
 // Sessions
 //
-$html .= "<p>Current length of session is ini_get('session.gc_maxlifetime') : " . ini_get('session.gc_maxlifetime') . ".<p>";
+$html .= "<p>Current length of session is ini_get('session.gc_maxlifetime') : " . ini_get('session.gc_maxlifetime') . "<p>";
 
 
 // -------------------------------------------------------------------------------------------
