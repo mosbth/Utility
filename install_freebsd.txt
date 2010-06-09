@@ -49,6 +49,31 @@ gm# vi /usr/local/etc/apache22/Includes/httpd-hide-git-svn.conf
    Deny from all
 </DirectoryMatch>
 
+#apachectl restart
+
+
+#
+# MySQL
+#
+# http://dev.mysql.com/doc/refman/5.1/en/mysql-installation-freebsd.html
+#
+gm# cd /usr/ports/databases/mysql51-client && make install clean
+gm# cd /usr/ports/databases/mysql51-server/ && make install clean
+gm# /usr/local/bin/mysql_install_db
+gm# chown -R mysql /var/db/mysql/
+gm# chgrp -R mysql /var/db/mysql/
+gm# /usr/local/bin/mysqld_safe -user=mysql &
+gm# mysqladmin shutdown -p
+gm# /usr/local/bin/mysqladmin -u root password newpassword
+gm# echo 'mysql_enable="YES"' >> /etc/rc.conf
+
+#config
+mysql> SELECT User, Host, Password FROM mysql.user;
+mysql> GRANT ALL ON *.* TO mos@localhost IDENTIFIED BY 'password';
+mysql> update mysql.user set
+Password = (select Password from mysql.user where User = 'root' and Host = 'localhost')
+where User = 'root';
+mysql> delete from mysql.user where User = '';
 
 #
 # PHP
@@ -62,5 +87,10 @@ AddType application/x-httpd-php .php
 AddType application/x-httpd-php-source .phps
 #AddType application/x-httpd-php .php .htm .html
 
+# Create the php.ini-file. Disable magic quotes, enable error reporting.
+# Test configuration using Utility/check_php_config.php
+
 gm# cd /usr/ports/www/php5-session && make install clean
 gm# cd /usr/ports/databases/php5-mysqli && make install clean
+
+#apachectl restart

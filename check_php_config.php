@@ -47,6 +47,31 @@ $html .= "<p>phpversion is : " . phpversion() . "</p>";
 
 // -------------------------------------------------------------------------------------------
 //
+// MySQL 
+//
+if (function_exists('mysqli_connect')) {
+	if(file_exists('config.php')) {
+		require_once('config.php');
+		$mysqli = new mysqli(DB_HOST, DB_USER, DB_PASSWORD, DB_DATABASE);
+		
+		if (mysqli_connect_error()) {
+			echo "Connect failed: ".mysqli_connect_error()."<br>";
+			exit();
+		}
+		
+		$html .= "<p>MySQL server is: " . $mysqli->server_info . "</p>";
+		$html .= "<p>MySQL client is: " . mysqli_get_client_version() . "</p>";
+		$html .= "<p>MySQL protocol is: " . $mysqli->protocol_version . "</p>";
+	}	else {
+		$html .= "<p>MySQLi is enabled, edit your config.php with connection parameters</p>";
+	}
+} else {
+	$html .= "<p>MySQLi is NOT enabled.</p>";
+}
+
+
+// -------------------------------------------------------------------------------------------
+//
 // Show output from phpinfo() if enabled
 //
 if(isset($_GET['phpinfo'])) {
