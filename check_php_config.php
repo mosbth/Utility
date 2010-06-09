@@ -25,12 +25,35 @@ $html .= "<p>Current level of error-reporting is: " . error_reporting() . "</p>"
 
 // -------------------------------------------------------------------------------------------
 //
+// Sessions
+//
+$html .= "<p>Current length of session is ini_get('session.gc_maxlifetime') : " . ini_get('session.gc_maxlifetime') . ".<p>";
+
+
+// -------------------------------------------------------------------------------------------
+//
+// Magic quotes
+//
+$html .= "<p>get_magic_quotes_gpc() is : " . get_magic_quotes_gpc() . "</p>";
+$html .= "<p>get_magic_quotes_runtime() is : " . get_magic_quotes_runtime() . "</p>";
+
+
+// -------------------------------------------------------------------------------------------
+//
+// PHP version
+//
+$html .= "<p>phpversion is : " . phpversion() . "</p>";
+
+
+// -------------------------------------------------------------------------------------------
+//
 // Show output from phpinfo() if enabled
 //
-if(phpinfo()) {
-	$html .= @phpinfo();
+if(isset($_GET['phpinfo'])) {
+	echo phpinfo();
+	exit;
 } else {
-	$html .= "<p>phpinfo() is disabled.</p>";
+	$html .= "<p>phpinfo() might be enabled. <a href='?phpinfo=1'>Click to view</a></p>";
 }
 
 
