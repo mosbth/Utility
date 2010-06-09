@@ -108,7 +108,10 @@ $new		= "";
 $copy		= "";
 $remove	= "";
 $link		= "";
-if(empty($case)) {
+if(empty($dir)) {
+	$new		= "disabled='disabled'";
+}
+if(empty($case) || empty($dir)) {
 	$execute= "disabled='disabled'";
 	$save		= "disabled='disabled'";
 	$copy		= "disabled='disabled'";
