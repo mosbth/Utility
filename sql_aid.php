@@ -108,8 +108,10 @@ $new		= "";
 $copy		= "";
 $remove	= "";
 $link		= "";
+$sample	= "";
 if(empty($dir)) {
 	$new		= "disabled='disabled'";
+	$sample	= "style='display: none;'";
 }
 if(empty($case) || empty($dir)) {
 	$execute= "disabled='disabled'";
@@ -234,7 +236,7 @@ Create a new testcase and save the query. Send the link of the testcase to a fri
 </form>
 <p>
 [<a {$link} title='Send this link to a friend to share it.' href='{$script}?case={$case}'>Link to this testcase</a>]  
-[<a title='View an example of an sample case.' href='{$script}?case=sql_aidsample'>Try a sample testcase</a>] 
+[<a {$sample} title='View an example of an sample case.' href='{$script}?case=sql_aidsample'>Try a sample testcase</a>] 
 </p>
 <p>{$htmlMulti}</p>
 </fieldset>
