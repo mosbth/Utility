@@ -1,5 +1,10 @@
 #
-# Alll commands for FreeBSD installation of OpenLDAP
+# All commands for FreeBSD installation of OpenLDAP
+#
+# http://www.freebsd.org/doc/en/articles/ldap-auth/index.html
+#
+# Install from ports
+# cd /usr/ports/net/openldap24-server && make install clean
 #
 # Edit the server config-file
 # vi /usr/local/etc/openldap/slapd.conf

@@ -1,3 +1,7 @@
+# -----------------------------------------------------------------------------
+#
+# Fresh minimal install
+#
 http://www.freebsd.org/doc/en_US.ISO8859-1/books/handbook/ports-using.html
 # portsnap fetch
 # portsnap extract
@@ -11,6 +15,7 @@ gm# cd /usr/ports/devel/git && make install clean
 
 gm# cd /usr/ports/devel/subversion && make install clean
 
+# -----------------------------------------------------------------------------
 #
 # Apache
 #
@@ -52,6 +57,7 @@ gm# vi /usr/local/etc/apache22/Includes/httpd-hide-git-svn.conf
 #apachectl restart
 
 
+# -----------------------------------------------------------------------------
 #
 # MySQL
 #
@@ -75,6 +81,10 @@ Password = (select Password from mysql.user where User = 'root' and Host = 'loca
 where User = 'root';
 mysql> delete from mysql.user where User = '';
 
+gm# /usr/local/etc/rc.d/mysql-server restart
+
+
+# -----------------------------------------------------------------------------
 #
 # PHP
 # 
@@ -94,3 +104,12 @@ gm# cd /usr/ports/www/php5-session && make install clean
 gm# cd /usr/ports/databases/php5-mysqli && make install clean
 
 #apachectl restart
+
+
+# -----------------------------------------------------------------------------
+#
+# OpenLDAP
+# 
+# Instructions from Utility/ldap.ldif
+#
+

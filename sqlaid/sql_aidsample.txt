@@ -1,0 +1,20 @@
+-- Drop the table before we start
+DROP TABLE IF EXISTS t1;
+
+-- Create the table 
+CREATE TABLE t1
+(
+ i INT AUTO_INCREMENT PRIMARY KEY,
+ c CHAR,
+ d DATETIME
+);
+
+-- Delete all values in the table
+DELETE FROM t1;
+
+-- Insert som values to play with
+INSERT INTO t1 (c, d) VALUES 
+('a', now()), ('b', now()), ('c', now());
+
+-- Do some queries
+SELECT * FROM t1;

@@ -36,5 +36,7 @@ $LDAP_DISABLED=true;  // true or false
 // SQL AID
 //
 $SQLAID_DISABLED=true; // true or false
+$SQLAID_DIRECTORY='sqlaid'; // relatively script location
+
 
 ?>

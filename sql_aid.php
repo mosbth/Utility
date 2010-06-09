@@ -17,6 +17,9 @@
 //
 // Revision history:
 //
+// 2010-06-09: Refreshed visual output. Tried integrating warnings - failed. Added affected_rows
+//             and info(). Enabled changing storagedir using parameter in config.php. Resultset
+//             is displayed tablevise.
 // 2010-05-06: Initial effort to put it together.
 //
 
@@ -28,6 +31,16 @@
 error_reporting(E_ALL);
 $SQLAID_DISABLED=true;
 if(is_readable('config.php')) {	require_once('config.php'); }
+
+if($SQLAID_DISABLED == false) {
+	if(!isset($SQLAID_DIRECTORY)) {
+		exit("SQLaid enabled but missing directory to store files. Define \$SQLAID_DIRECTORY.");
+	}
+	$dir = dirname(__FILE__) . DIRECTORY_SEPARATOR . $SQLAID_DIRECTORY;
+	if(!(is_dir($dir) && is_writable($dir))) {
+		exit("The directory: '{$dir}' does not exists or is not writeable by the webserver.");
+	}
+}
 
 
 // -------------------------------------------------------------------------------------------
@@ -55,7 +68,7 @@ if($submit == 'new-case') {
 // Copy new testcase
 if($submit == 'copy-case') {
 	$newcase = uniqid(basename(__FILE__, '.php'));
-	$r = copy("tmp/{$case}.txt", "tmp/{$newcase}.txt");
+	$r = copy("{$dir}/{$case}.txt", "{$dir}/{$newcase}.txt");
 	if($r) {
 		$status = "Created a new case with id={$newcase}, copied content from case with id={$case}";
 	} else {
@@ -64,7 +77,7 @@ if($submit == 'copy-case') {
 	$case = $newcase;
 }
 
-$filename = "tmp/{$case}.txt";
+$filename = "{$dir}/{$case}.txt";
 
 // Write to file
 if($submit == 'save-case') {
@@ -143,19 +156,41 @@ else if($submit == 'execute-sql' && !empty($query)) {
 	$statements = 0;
 	do {
 		$res = $mysqli->store_result();
-		$htmlMulti .= "<p>Statement " . $statements++ . ":</p>";
+		$htmlMulti .= "<p><strong>Statement " . $statements++ . ":</strong><br />";
+		$htmlMulti .= "<i>" . $mysqli->affected_rows . " row(s) affected.</i><br />";			
+		$htmlMulti .= "<i>" . $mysqli->info . "</i></p>";			
+
+		// Show all warnings
+/*
+		if ($mysqli->warning_count) { 
+			$e = $mysqli->get_warnings(); 
+			do { 
+				$htmlMulti .=  "Warning: {$e->errno}: {$e->message}<br />"; 
+			} while ($e->next()); 
+		} 
+*/
+
 		if(is_object($res)) {
-			$htmlMulti .= "Resultset has " . $res->num_rows . " rows.<pre>";
 			$i=1;
+			$htmlMulti .= "<table>"; 
+			$htmlMulti .= "<caption>Resultset has " . $res->num_rows . " rows.</caption>";
 			while ($row = $res->fetch_assoc()) {
-				$htmlMulti .= "Row " . $i++ . ": " . implode(', ', $row) . "\n";
+				if($i == 1) {
+					$htmlMulti .= "<tr><th>Rownum</th>"; 
+					foreach($row as $key => $val) {
+						$htmlMulti .= "<th>{$key}</th>";
+					}
+					$htmlMulti .= "</tr>"; 
+				}
+				$htmlMulti .= "<tr class='r" . ($i % 2 + 1) . "'><td>". $i++ . "</td><td>" . implode('</td><td>', $row) . "</td></tr>";
 			}
-			$htmlMulti .= "</pre>";
-		}		
+			$htmlMulti .= "</table>"; 
+		}
 	} while($mysqli->next_result());
 
-	$htmlMulti .= "<p>Successful statements: {$statements}</p>";
-	$htmlMulti .= "<p>Error code: {$mysqli->errno} ({$mysqli->error})</p>";
+	$htmlMulti .= "<p><strong>Summary</strong><br />";
+	$htmlMulti .= "Successful statements: {$statements}<br />";
+	$htmlMulti .= "Error code: {$mysqli->errno} ({$mysqli->error})</p>";
 }
 
 
@@ -223,6 +258,24 @@ $html = <<< EOD
 <head>
 <meta charset="{$charset}" />
 <title>{$title}</title>
+<style>
+table th {
+	background: #aaa;
+}
+table tr.r1 {
+	background: #ddd;
+}
+table tr.r2 {
+	background: #eee;
+}
+table td {
+	background: inherit;
+}
+table caption {
+	float: left;
+	font-style: italic;
+}
+</style>
 <script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
 </head>
 <body>
