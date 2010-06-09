@@ -62,4 +62,5 @@ AddType application/x-httpd-php .php
 AddType application/x-httpd-php-source .phps
 #AddType application/x-httpd-php .php .htm .html
 
+gm# cd /usr/ports/www/php5-session && make install clean
 gm# cd /usr/ports/databases/php5-mysqli && make install clean
