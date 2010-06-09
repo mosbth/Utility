@@ -1,0 +1,65 @@
+http://www.freebsd.org/doc/en_US.ISO8859-1/books/handbook/ports-using.html
+# portsnap fetch
+# portsnap extract
+# portsnap update
+
+gm# cd /usr/ports/sysutils/screen && make install clean
+
+gm# cd /usr/ports/irc/irssi && make install clean
+
+gm# cd /usr/ports/devel/git && make install clean
+
+gm# cd /usr/ports/devel/subversion && make install clean
+
+#
+# Apache
+#
+# Take a copy of whole /usr/local/etc/apache22, its the config directory.
+#
+gm# cd /usr/ports/www/apache22 && make install clean
+gm# echo 'apache22_enable="YES"' >> /etc/rc.conf
+gm# vi /usr/local/etc/apache22/httpd.conf 
+
+#DO: Include config file for virtualhosts from httpd.conf
+gm# vi /usr/local/etc/apache22/extra/httpd-vhosts.conf
+<URL:http://httpd.apache.org/docs/2.2/vhosts/>
+<VirtualHost *:80>
+    DocumentRoot "/usr/home/mos/htdocs/dbwebb.se"
+    <Directory "/usr/home/mos/htdocs/dbwebb.se">
+        Options Indexes FollowSymLinks
+        AllowOverride None
+        Order allow,deny
+        Allow from all
+    </Directory>
+    ServerName dbwebb.se
+    ServerAlias www.dbwebb.se
+    ErrorLog "/usr/home/mos/htdocs/log/dbwebb.se-error_log"
+    CustomLog "/usr/home/mos/htdocs/log/dbwebb.se-access_log" common
+</VirtualHost>
+
+
+gm# vi /usr/local/etc/apache22/Includes/httpd-hide-git-svn.conf 
+<DirectoryMatch \.svn>
+   Order allow,deny
+   Deny from all
+</DirectoryMatch>
+
+<DirectoryMatch \.git>
+   Order allow,deny
+   Deny from all
+</DirectoryMatch>
+
+
+#
+# PHP
+# 
+# Don't forget to check to build for apache.
+#
+gm# cd /usr/ports/lang/php5 && make config install clean
+
+gm# cat /usr/local/etc/apache22/Includes/enable-php5.conf 
+AddType application/x-httpd-php .php
+AddType application/x-httpd-php-source .phps
+#AddType application/x-httpd-php .php .htm .html
+
+gm# cd /usr/ports/databases/php5-mysqli && make install clean
