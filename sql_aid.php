@@ -34,7 +34,7 @@ if(is_readable('config.php')) {	require_once('config.php'); }
 
 if($SQLAID_DISABLED == false) {
 	if(!isset($SQLAID_DIRECTORY)) {
-		exit("<strong><em>sqlaid is enabled but missing directory to store files. Define \$SQLAID_DIRECTORY.</em></strong>");
+		exit("<strong><em>sqlaid is enabled but missing directory to store files. Define \$SQLAID_DIRECTORY and ensure its a writable directory.</em></strong>");
 	}
 	$dir = dirname(__FILE__) . DIRECTORY_SEPARATOR . $SQLAID_DIRECTORY;
 	if(!(is_dir($dir) && is_writable($dir))) {
@@ -113,7 +113,7 @@ if(empty($dir)) {
 	$new		= "disabled='disabled'";
 	$sample	= "style='display: none;'";
 }
-if(empty($case) || empty($dir)) {
+if(empty($case) || empty($dir)) {
 	$execute= "disabled='disabled'";
 	$save		= "disabled='disabled'";
 	$copy		= "disabled='disabled'";
