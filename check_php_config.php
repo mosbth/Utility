@@ -21,7 +21,7 @@
 if(phpinfo()) {
 	$html = phpinfo();
 } else {
-	$html = "<p>phpinfo() is disabled.</p>"
+	$html = "<p>phpinfo() is disabled.</p>";
 }
 
 
