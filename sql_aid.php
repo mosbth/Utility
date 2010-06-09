@@ -34,12 +34,14 @@ if(is_readable('config.php')) {	require_once('config.php'); }
 
 if($SQLAID_DISABLED == false) {
 	if(!isset($SQLAID_DIRECTORY)) {
-		exit("SQLaid enabled but missing directory to store files. Define \$SQLAID_DIRECTORY.");
+		exit("<strong><em>sqlaid is enabled but missing directory to store files. Define \$SQLAID_DIRECTORY.</em></strong>");
 	}
 	$dir = dirname(__FILE__) . DIRECTORY_SEPARATOR . $SQLAID_DIRECTORY;
 	if(!(is_dir($dir) && is_writable($dir))) {
-		exit("The directory: '{$dir}' does not exists or is not writeable by the webserver.");
+		exit("<strong><em>The directory: '{$dir}' does not exists or is not writeable by the webserver.</em></strong>");
 	}
+} else {
+	$dir = '';
 }
 
 
@@ -135,7 +137,7 @@ $htmlMulti 	= "";
 
 $disabledStatus="";
 if($SQLAID_DISABLED) {
-	$disabledStatus = "\$SQLAID_DISABLED=true; Change this in the sourcefile or in config.php to enable this script.";
+	$disabledStatus = "<em>\$SQLAID_DISABLED=true; Change this in the sourcefile or in config.php to enable this script.</em>";
 }
 else if($submit == 'execute-sql' && !empty($query)) {
 
@@ -157,8 +159,8 @@ else if($submit == 'execute-sql' && !empty($query)) {
 	do {
 		$res = $mysqli->store_result();
 		$htmlMulti .= "<p><strong>Statement " . $statements++ . ":</strong><br />";
-		$htmlMulti .= "<i>" . $mysqli->affected_rows . " row(s) affected.</i><br />";			
-		$htmlMulti .= "<i>" . $mysqli->info . "</i></p>";			
+		$htmlMulti .= "<em>" . $mysqli->affected_rows . " row(s) affected.</em><br />";			
+		$htmlMulti .= "<em>" . $mysqli->info . "</em></p>";			
 
 		// Show all warnings
 /*
