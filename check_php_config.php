@@ -99,7 +99,7 @@ if (function_exists('mysqli_connect')) {
 //
 // LDAP
 //
-if (function_exists('mysqli_connect')) {
+if (function_exists('ldap_connect')) {
 	$html .= "<p>LDAP IS enabled.</p>";
 } else {
 	$html .= "<p>LDAP is NOT enabled.</p>";
