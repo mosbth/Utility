@@ -116,6 +116,7 @@ else if($submit == 'connect-to-server') {
 	$connectStatus = "<p>Connecting... ";
 	$ds = ldap_connect($server);
 	ldap_set_option($ds, LDAP_OPT_PROTOCOL_VERSION, 3);
+	ldap_set_option($ds, LDAP_OPT_REFERRALS, 0);
 	ldap_start_tls($ds);
 	$connectStatus .= "done. Result is '{$ds}'.</p>";
   ldap_close($ds);
