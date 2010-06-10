@@ -257,6 +257,10 @@ Shows how to use PHP and LDAP to communicate with a LDAP server.
 <td style='text-align: right;'><input type='text' name='server' value='{$server}'></td>
 </tr>
 <tr>
+<td><label for="tls">Use TLS:</label></td>
+<td><input type='checkbox' name='tls' value='on' {$tlschecked}></td>
+</tr>
+<tr>
 <td colspan='2' style='text-align: right;'>
 <button type='submit' name='submit' value='bind-to-server'>Bind to server</button>
 </td>
@@ -275,6 +279,10 @@ Shows how to use PHP and LDAP to communicate with a LDAP server.
 <tr>
 <td><label for="server">LDAP-server:</label></td>
 <td style='text-align: right;'><input type='text' name='server' value='{$server}'></td>
+</tr>
+<tr>
+<td><label for="tls">Use TLS:</label></td>
+<td><input type='checkbox' name='tls' value='on' {$tlschecked}></td>
 </tr>
 <tr>
 <td><label for="basedn">Base DN (Distinguished Name):</label></td>
@@ -303,6 +311,10 @@ Shows how to use PHP and LDAP to communicate with a LDAP server.
 <tr>
 <td><label for="server">LDAP-server:</label></td>
 <td style='text-align: right;'><input type='text' name='server' value='{$server}'></td>
+</tr>
+<tr>
+<td><label for="tls">Use TLS:</label></td>
+<td><input type='checkbox' name='tls' value='on' {$tlschecked}></td>
 </tr>
 <tr>
 <td><label for="basedn">Base DN (Distinguished Name):</label></td>
