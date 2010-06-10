@@ -97,6 +97,17 @@ if (function_exists('mysqli_connect')) {
 
 // -------------------------------------------------------------------------------------------
 //
+// LDAP
+//
+if (function_exists('mysqli_connect')) {
+	$html .= "<p>LDAP IS enabled.</p>";
+} else {
+	$html .= "<p>LDAP is NOT enabled.</p>";
+}
+
+
+// -------------------------------------------------------------------------------------------
+//
 // Show output from phpinfo() if enabled
 //
 if(isset($_GET['phpinfo'])) {
