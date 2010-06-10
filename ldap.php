@@ -13,7 +13,10 @@
 //
 // Change history:
 // 
-// 2010-06-10: Support TLS.
+// 2010-06-10: Support TLS by using:
+// 	ldap_set_option($ds, LDAP_OPT_REFERRALS, 0);
+//	ldap_start_tls($ds);
+//
 // 2010-04-27: First version.
 //
 //
@@ -132,6 +135,8 @@ else if($submit == 'bind-to-server') {
 	$bindStatus = "<p>Connecting and binding... ";
 	$ds	= ldap_connect($server);
 	ldap_set_option($ds, LDAP_OPT_PROTOCOL_VERSION, 3);
+	ldap_set_option($ds, LDAP_OPT_REFERRALS, 0);
+	ldap_start_tls($ds);
   $r	= ldap_bind($ds);
 	$bindStatus .= "done. Bind result is '{$r}'.</p>";
   ldap_close($ds);
@@ -147,6 +152,8 @@ else if($submit == 'search-uid') {
 	$searchStatus = "<p>Connecting and binding... ";
 	$ds	= ldap_connect($server);
 	ldap_set_option($ds, LDAP_OPT_PROTOCOL_VERSION, 3);
+	ldap_set_option($ds, LDAP_OPT_REFERRALS, 0);
+	ldap_start_tls($ds);
   $r	= ldap_bind($ds);
 	$searchStatus .= "done. Bind result is '{$r}'.</p>";
 	$searchStatus .= "<p>Searching for 'uid={$uid}'...";
@@ -168,6 +175,8 @@ else if($submit == 'check-password') {
 	$passwordStatus = "<p>Connecting and binding... ";
 	$ds	= ldap_connect($server);
 	ldap_set_option($ds, LDAP_OPT_PROTOCOL_VERSION, 3);
+	ldap_set_option($ds, LDAP_OPT_REFERRALS, 0);
+	ldap_start_tls($ds);
   $r	= ldap_bind($ds);
 	$passwordStatus .= "done. Bind result is '{$r}'.</p>";
 	$passwordStatus .= "<p>Searching for 'uid={$uid}'...";
