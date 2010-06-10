@@ -88,6 +88,7 @@ $server 	= strip_tags(isset($_POST['server']) ? $_POST['server']: '');
 $basedn 	= ldap_escape(isset($_POST['basedn']) ? $_POST['basedn'] : '', false);
 $uid			= strip_tags(isset($_POST['uid']) ? $_POST['uid'] : '');
 $password	= strip_tags(ldap_escape(isset($_POST['password']) ? $_POST['password'] : ''));
+$usetls		= strip_tags(isset($_POST['tls']) ? $_POST['tls'] : '');
 
 //$basedn 	= strip_tags($_POST['basedn']);
 //$uid			= strip_tags($_POST['uid']);
@@ -119,8 +120,10 @@ else if($submit == 'connect-to-server') {
 	$connectStatus = "<p>Connecting... ";
 	$ds = ldap_connect($server);
 	ldap_set_option($ds, LDAP_OPT_PROTOCOL_VERSION, 3);
-	ldap_set_option($ds, LDAP_OPT_REFERRALS, 0);
-	ldap_start_tls($ds);
+	if($usetls) {
+		ldap_set_option($ds, LDAP_OPT_REFERRALS, 0);
+		ldap_start_tls($ds);
+	}
 	$connectStatus .= "done. Result is '{$ds}'.</p>";
   ldap_close($ds);
 }
@@ -135,9 +138,11 @@ else if($submit == 'bind-to-server') {
 	$bindStatus = "<p>Connecting and binding... ";
 	$ds	= ldap_connect($server);
 	ldap_set_option($ds, LDAP_OPT_PROTOCOL_VERSION, 3);
-	ldap_set_option($ds, LDAP_OPT_REFERRALS, 0);
-	ldap_start_tls($ds);
-  $r	= ldap_bind($ds);
+	if($usetls) {
+		ldap_set_option($ds, LDAP_OPT_REFERRALS, 0);
+		ldap_start_tls($ds);
+	}
+	$r	= ldap_bind($ds);
 	$bindStatus .= "done. Bind result is '{$r}'.</p>";
   ldap_close($ds);
 }
@@ -152,8 +157,10 @@ else if($submit == 'search-uid') {
 	$searchStatus = "<p>Connecting and binding... ";
 	$ds	= ldap_connect($server);
 	ldap_set_option($ds, LDAP_OPT_PROTOCOL_VERSION, 3);
-	ldap_set_option($ds, LDAP_OPT_REFERRALS, 0);
-	ldap_start_tls($ds);
+	if($usetls) {
+		ldap_set_option($ds, LDAP_OPT_REFERRALS, 0);
+		ldap_start_tls($ds);
+	}
   $r	= ldap_bind($ds);
 	$searchStatus .= "done. Bind result is '{$r}'.</p>";
 	$searchStatus .= "<p>Searching for 'uid={$uid}'...";
@@ -173,10 +180,12 @@ else if($submit == 'search-uid') {
 else if($submit == 'check-password') {
 
 	$passwordStatus = "<p>Connecting and binding... ";
-	$ds	= ldap_connect($server);
+	$ds	= ldap_connect($server, 686);
 	ldap_set_option($ds, LDAP_OPT_PROTOCOL_VERSION, 3);
-	ldap_set_option($ds, LDAP_OPT_REFERRALS, 0);
-	ldap_start_tls($ds);
+	if($usetls) {
+		ldap_set_option($ds, LDAP_OPT_REFERRALS, 0);
+		ldap_start_tls($ds);
+	}
   $r	= ldap_bind($ds);
 	$passwordStatus .= "done. Bind result is '{$r}'.</p>";
 	$passwordStatus .= "<p>Searching for 'uid={$uid}'...";
@@ -199,6 +208,8 @@ else if($submit == 'check-password') {
 //
 $script = basename(__FILE__);
 
+$tlschecked = (!empty($usetls)) ? 'checked' : '';
+
 $html = <<<EOD
 <h1>Various examples on PHP and LDAP</h1>
 <p>
@@ -220,6 +231,10 @@ Shows how to use PHP and LDAP to communicate with a LDAP server.
 <tr>
 <td><label for="server">LDAP-server:</label></td>
 <td style='text-align: right;'><input type='text' name='server' value='{$server}'></td>
+</tr>
+<tr>
+<td><label for="tls">Use TLS:</label></td>
+<td><input type='checkbox' name='tls' value='on' {$tlschecked}></td>
 </tr>
 <tr>
 <td colspan='2' style='text-align: right;'>
