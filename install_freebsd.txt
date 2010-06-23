@@ -180,7 +180,7 @@ TLSCACertificateFile  /usr/local/etc/openldap/ssl/cacert.crt
 # ------- OBSOLETE STOP ----------
 
 #
-# Enable TSL
+# Enable TLS and SSL (ldaps://)
 #
 gm# vi /usr/local/etc/openldap/slapd.conf
 Add ---
@@ -195,9 +195,13 @@ TLSCACertificateFile  /usr/local/etc/openldap/ssl/server.crt
 #
 gm#: openssl req -new -x509 -days 365 -sha1 -newkey rsa:1024 -nodes -keyout server.key -out server.crt -subj '/DC=se/DC=dbwebb/CN=ldap.dbwebb.se'
 
-gm# /usr/local/etc/rc.d/slapd restart
-gm# sockstat -4 -p 389
+# Start slapd to listen on both ldap:// and ldaps://
+gm# echo 'slapd_flags=\'-h "ldaps:/// ldap:///"\'' >> /etc/rc.conf
 
+gm# /usr/local/etc/rc.d/slapd restart
+gm# sockstat -4 -p "389,636'
+
+# Client issue to NOT validate self-signed server cert
 gm# vi /usr/local/etc/openldap/ldap.conf
 Add ---
 TLS_REQCERT allow
@@ -206,3 +210,4 @@ TLS_REQCERT allow
 # Test that TLS works using -Z
 gm# ldapsearch -Z -x -b '' -s base '(objectclass=*)' namingContexts
 gm# ldapvi -Z --tls allow -D "cn=Manager,dc=dbwebb,dc=se" --discover
+# http://dbwebb.se/utility/ldap.php
