@@ -180,7 +180,7 @@ else if($submit == 'search-uid') {
 else if($submit == 'check-password') {
 
 	$passwordStatus = "<p>Connecting and binding... ";
-	$ds	= ldap_connect($server, 686);
+	$ds	= ldap_connect($server);
 	ldap_set_option($ds, LDAP_OPT_PROTOCOL_VERSION, 3);
 	if($usetls) {
 		ldap_set_option($ds, LDAP_OPT_REFERRALS, 0);

@@ -79,3 +79,38 @@ mail: moped@megamic.se
 uid: moped
 userPassword: {MD5}gEBGL8nGXTrQRe7Gv5lOjQ==
 
+# Doe1
+dn: cn=John/Jane Doe1,dc=dbwebb,dc=se
+objectclass: inetorgperson
+cn: John/Jane Doe1
+cn: John Doe1
+cn: Jane Doe1
+sn: Doe1
+mail: doe1@bth.se
+uid: doe1
+userPassword: doe1
+
+# Doe2
+dn: cn=John/Jane Doe2,dc=dbwebb,dc=se
+objectclass: inetorgperson
+cn: John/Jane Doe2
+cn: John Doe2
+cn: Jane Doe2
+sn: Doe2
+mail: doe2@bth.se
+uid: doe2
+userPassword: doe2
+
+# Doe3
+dn: cn=John/Jane Doe3,dc=dbwebb,dc=se
+objectclass: inetorgperson
+cn: John/Jane Doe3
+cn: John Doe3
+cn: Jane Doe3
+sn: Doe3
+mail: doe3@bth.se
+uid: doe3
+userPassword: doe3
+
+
+
