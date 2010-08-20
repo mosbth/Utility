@@ -100,7 +100,7 @@ $bindStatus 		= "";
 $searchStatus 	= "";
 $passwordStatus = "";
 
-echo $_POST['password'] . "<br>" . $password;
+echo $_POST['password'] . "<br>" . urlencode($_POST['password']) . "<br>" . stripslashes($_POST['password']) . "<br>" . $password;
 
 
 
