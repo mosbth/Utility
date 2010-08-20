@@ -102,7 +102,7 @@ $passwordStatus = "";
 
 echo $_POST['password'] . "<br>" . urlencode($_POST['password']) . "<br>" . stripslashes($_POST['password']) . "<br>" . utf8_decode($_POST['password']) . "<br>" . $password;
 
-
+$password = stripslashes($_POST['password']);
 
 // -------------------------------------------------------------------------------------------
 //
