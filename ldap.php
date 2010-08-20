@@ -44,7 +44,7 @@ function get_entries($ds, $sr) {
 	for ($i=0; $i<$info["count"]; $i++) {
 		$res .= "<p>";
 		$res .= "dn: {$info[$i]['dn']} ({$info[$i]['count']} )<br />";
-		$res .= "cn[0]: {$info[$i]['cn'][0]} <br />";
+		@$res .= "cn[0]: {$info[$i]['cn'][0]} <br />";
 		$res .= "sn[0]: {$info[$i]['sn'][0]}<br />";
 		$res .= "uid[0]: {$info[$i]['uid'][0]}<br />";
 		$res .= "mail[0]: {$info[$i]['mail'][0]}<br />";
@@ -99,6 +99,9 @@ $connectStatus 	= "";
 $bindStatus 		= "";
 $searchStatus 	= "";
 $passwordStatus = "";
+
+echo $_POST['password'] . "<br>" . $password;
+
 
 
 // -------------------------------------------------------------------------------------------
