@@ -87,7 +87,8 @@ $submit 	= strip_tags(isset($_POST['submit']) ? $_POST['submit'] : '');
 $server 	= strip_tags(isset($_POST['server']) ? $_POST['server']: '');
 $basedn 	= ldap_escape(isset($_POST['basedn']) ? $_POST['basedn'] : '', false);
 $uid			= strip_tags(isset($_POST['uid']) ? $_POST['uid'] : '');
-$password	= strip_tags(ldap_escape((isset($_POST['password']) ? stripslashes($_POST['password']) : '')));
+// striptags only for this example, not when running live
+$password	= strip_tags(ldap_escape((isset($_POST['password']) ? $_POST['password'] : '')));
 $usetls		= strip_tags(isset($_POST['tls']) ? $_POST['tls'] : '');
 
 //$basedn 	= strip_tags($_POST['basedn']);
@@ -100,9 +101,6 @@ $bindStatus 		= "";
 $searchStatus 	= "";
 $passwordStatus = "";
 
-echo $_POST['password'] . "<br>" . urlencode($_POST['password']) . "<br>" . stripslashes($_POST['password']) . "<br>" . utf8_decode($_POST['password']) . "<br>" . $password;
-
-$password = stripslashes($_POST['password']);
 
 // -------------------------------------------------------------------------------------------
 //
