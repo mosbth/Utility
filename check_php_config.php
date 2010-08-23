@@ -81,7 +81,7 @@ if (function_exists('mysqli_connect')) {
 		
 		if (mysqli_connect_error()) {
 			echo "Connect failed: ".mysqli_connect_error()."<br>";
-			exit();
+			//exit();
 		}
 		
 		$html .= "<p>MySQL server is: " . $mysqli->server_info . "</p>";
