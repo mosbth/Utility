@@ -95,6 +95,8 @@ $usetls		= strip_tags(isset($_POST['tls']) ? $_POST['tls'] : '');
 //$uid			= strip_tags($_POST['uid']);
 //$password	= strip_tags($_POST['password']);
 
+echo $password . "<br>" . $_POST['password'] . "<br>";
+
 $disabledStatus = "";
 $connectStatus 	= "";
 $bindStatus 		= "";
