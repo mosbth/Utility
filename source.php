@@ -13,6 +13,7 @@
 // 
 // 2010-09-07: 
 // Added replacement of \t with spaces as configurable option ($SPACES).
+// Removed .htaccess-files. Do not show them.
 //
 // 2010-04-27: 
 // Hide password even in config.php~.
@@ -108,7 +109,7 @@ $list = Array();
 if(is_dir($dir)) {
     if ($dh = opendir($dir)) {
         while (($file = readdir($dh)) !== false) {
-        	if($file != '.' && $file != '..' && $file != '.svn' && $file != '.git') {
+        	if($file != '.' && $file != '..' && $file != '.svn' && $file != '.git' && $file != '.htaccess') {
         		$curfile = $fullpath . $SEPARATOR . $file;
         		if(is_dir($curfile)) {
           	  		$list[$file] = "<a href='{$HREF}dir={$curdir1}{$file}'>{$file}{$SEPARATOR}</a>";
