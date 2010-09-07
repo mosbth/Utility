@@ -11,6 +11,9 @@
 //
 // Change history:
 // 
+// 2010-09-07: 
+// Added replacement of \t with spaces as configurable option ($SPACES).
+//
 // 2010-04-27: 
 // Hide password even in config.php~.
 // Added rownumbers and enabled linking to specific row-number.
@@ -40,7 +43,8 @@ $BASEDIR = '.' . $SEPARATOR;
 // DEFAULT performs <pre> and htmlspecialchars.
 // HTML to be done.
 // CSS to be done.
-$SYNTAX = 'PHP'; // DEFAULT or PHP
+$SYNTAX = 'PHP'; 	// DEFAULT or PHP
+$SPACES = '  '; 	// Number of spaces to replace each \t
 
 // The link to this page. You may want to change it from relative link to absolute link.
 $HREF = 'source.php?';
@@ -137,7 +141,8 @@ if(isset($_GET['file'])) {
 	$file = basename($_GET['file']);
 
 	// Get the content of the file
-	$content = file_get_contents($dir . $SEPARATOR . $file, 'FILE_TEXT');
+	$content = file_get_contents($dir . $SEPARATOR . $file);
+	$content = str_replace("\t", $SPACES, $content);
 
 	// Remove password and user from config.php, if enabled
 	if($HIDE_DB_USER_PASSWORD == TRUE && 
