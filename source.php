@@ -11,6 +11,11 @@
 //
 // Change history:
 // 
+// 2010-09-09: 
+// Changed error_reporting to from E_ALL to -1.
+// Display images of certain types, configurable option $IMAGES.
+// Enabled display option of SVG-graphics.
+//
 // 2010-09-07: 
 // Added replacement of \t with spaces as configurable option ($SPACES).
 // Removed .htaccess-files. Do not show them.
@@ -25,7 +30,7 @@
 // Settings for this pagecontroller. Review and change these settings to match your own
 // environment.
 //
-error_reporting(E_ALL);
+error_reporting(-1);
 
 // Separator between directories and files, change between Unix/Windows
 $SEPARATOR = DIRECTORY_SEPARATOR; 	// Using built-in PHP-constant for separator.
@@ -38,6 +43,9 @@ $HIDE_DB_USER_PASSWORD = TRUE; // TRUE or FALSE
 // Which directory to use as basedir for file listning, end with separator.
 // Default is current directory
 $BASEDIR = '.' . $SEPARATOR;
+
+// Display pictures instead of their source, if they have a certain extension (filetype).
+$IMAGES = Array('png', 'gif', 'jpg', 'ico');
 
 // Show syntax of the code, currently only supporting PHP or DEFAULT.
 // PHP uses PHP built-in function highlight_string.
@@ -55,7 +63,6 @@ $HREF = 'source.php?';
 //
 // Page specific code
 //
-
 $html = <<<EOD
 <header>
 <h1>Show sourcecode</h1>
@@ -143,7 +150,6 @@ if(isset($_GET['file'])) {
 
 	// Get the content of the file
 	$content = file_get_contents($dir . $SEPARATOR . $file);
-	$content = str_replace("\t", $SPACES, $content);
 
 	// Remove password and user from config.php, if enabled
 	if($HIDE_DB_USER_PASSWORD == TRUE && 
@@ -155,8 +161,37 @@ if(isset($_GET['file'])) {
 		$content = preg_replace($pattern, $replace, $content);
 	}
 	
+	//
+	// Display image if a valid image file
+	//
+	$pathParts = pathinfo($dir . $SEPARATOR . $file);
+	$extension = strtolower($pathParts['extension']);
+
+	//
+	// Display svg-image or enable link to display svg-image.
+	//
+	$linkToDisplaySvg = "";
+	if($extension == 'svg') {
+		if(isset($_GET['displaysvg'])) {
+			header("Content-type: image/svg+xml");
+			echo $content;
+			exit;		
+		} else {
+			$linkToDisplaySvg = "<a href='{$_SERVER['REQUEST_URI']}&displaysvg'>Display as SVG</a>";
+		}
+	}
+	
+	//
+	// Display image if a valid image file
+	//
+	if(in_array($extension, $IMAGES)) {
+		$content = "<img src='{$currentdir}/{$file}' alt='[image not found]'>";
+
+	//
 	// Show syntax if defined
-	if($SYNTAX == 'PHP') {
+	//
+	} elseif($SYNTAX == 'PHP') {
+		$content = str_replace("\t", $SPACES, $content);
 		$content = highlight_string($content, TRUE);
 		$sloc = 0;
 		$i=0;
@@ -173,7 +208,7 @@ if(isset($_GET['file'])) {
 <div class='container'>
 <div class='header'>
 <!-- {$i} lines ({$sloc} sloc) -->
-{$i} lines
+{$i} lines {$linkToDisplaySvg}
 </div>
 <div class='rows'>
 {$rownums}
@@ -185,7 +220,9 @@ if(isset($_GET['file'])) {
 EOD;
 	} 
 	
+	//
 	// DEFAULT formatting
+	//
 	else {
 		$content = htmlspecialchars($content);
 		$content = "<pre>{$content}</pre>";
@@ -223,7 +260,7 @@ $html = <<< EOD
 			font-size: 1.1em;
 			border: solid 1px #999;
 			border-bottom: 0px;
-			background: #cacaca;
+			background: #eee;
 			padding: 0.5em 0.5em 0.5em 0.5em;
 		}	
  		div.rows {
@@ -231,7 +268,7 @@ $html = <<< EOD
  			text-align: right;
 			color: #999;
 			border: solid 1px #999;
-			background: #cacaca;
+			background: #eee;
 			padding: 0.5em 0.5em 0.5em 0.5em;
 		}	
 		div.rows a:link,
