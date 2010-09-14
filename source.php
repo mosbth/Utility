@@ -11,6 +11,9 @@
 //
 // Change history:
 // 
+// 2010-09-14: 
+// Thanks to Rocky. Corrected NOTICE when files had no extension.
+//
 // 2010-09-09: 
 // Changed error_reporting to from E_ALL to -1.
 // Display images of certain types, configurable option $IMAGES.
@@ -165,7 +168,7 @@ if(isset($_GET['file'])) {
 	// Display image if a valid image file
 	//
 	$pathParts = pathinfo($dir . $SEPARATOR . $file);
-	$extension = strtolower($pathParts['extension']);
+	$extension = isset($pathParts['extension']) ? strtolower($pathParts['extension']) : '';
 
 	//
 	// Display svg-image or enable link to display svg-image.
