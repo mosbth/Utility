@@ -211,3 +211,29 @@ TLS_REQCERT allow
 gm# ldapsearch -Z -x -b '' -s base '(objectclass=*)' namingContexts
 gm# ldapvi -Z --tls allow -D "cn=Manager,dc=dbwebb,dc=se" --discover
 # http://dbwebb.se/utility/ldap.php
+
+
+# ---------------------------------------------------------------------------------
+#
+# Enable login through LDAP
+#
+# http://www.freebsd.org/doc/en/articles/ldap-auth/article.html
+#
+gm# cd security/pam_ldap/ ; make install clean ;
+
+Create the config-file /usr/local/etc/ldap.conf, may be same settings as openldap/ldap.conf
+
+Edit /etc/pam.d/sshd, add line:
+auth            sufficient      /usr/local/lib/pam_ldap.se      no_warn
+account         required        /usr/local/lib/pam_ldap.so      no_warn ignore_authinfo_unavail ignore_unknown_user
+
+#
+# Not needed to set up nss to allow gettin guid&gid from LDAP
+#
+gm# cd /usr/ports/net/nss_ldap/; make install clean;
+The nss_ldap module expects to find its configuration files at the
+following paths:
+
+LDAP configuration:     /usr/local/etc/nss_ldap.conf
+LDAP secret (optional): /usr/local/etc/nss_ldap.secret
+
