@@ -1,32 +1,61 @@
 # -----------------------------------------------------------------------------
 #
-# Fresh minimal install
+# Create bootable usb on mac
 #
-http://www.freebsd.org/doc/en_US.ISO8859-1/books/handbook/ports-using.html
-# portsnap fetch
-# portsnap extract
-# portsnap update
+Download image for usb-use.
 
-gm# cd /usr/ports/sysutils/screen && make install clean
+http://www.webupd8.org/2009/04/4-ways-to-create-bootable-live-usb.html
+4. Using Diskutil (Mac OS X only)
 
-gm# cd /usr/ports/irc/irssi && make install clean
+Download the desired .img file
+Open a Terminal (under Utilities)
+Run diskutil list to get the current list of devices
+Insert your flash media
+Run diskutil list again and determine the device node assigned to your flash media (e.g. /dev/disk2)
+Run diskutil unmountDisk /dev/diskN
+Execute sudo dd if=/path/to/downloaded.img of=/dev/diskN bs=1m
+Run diskutil eject /dev/diskN and remove your flash media when the command completes
 
-gm# cd /usr/ports/devel/git && make install clean
 
-gm# cd /usr/ports/devel/subversion && make install clean
+# -----------------------------------------------------------------------------
+#
+# Fresh minimal install and some neccessaties
+#
+# http://www.freebsd.org/doc/en_US.ISO8859-1/books/handbook/ports-using.html
+# 
+install freebsd, minimal install
+
+portsnap fetch
+portsnap extract
+portsnap update
+cd /usr/ports/sysutils/screen && make install clean
+cd /usr/ports/irc/irssi && make install clean
+cd /usr/ports/devel/git && make install clean
+cd /usr/ports/devel/subversion && make install clean
+cd /usr/ports/net/rsync/; make install clean:
+ add iconv support 
+ add -atime
+
+sysutils & install manualpages Configure - Distributions - System Manual Pages
+
+# have /tmp in memory
+echo 'tmpmfs="YES"' >> /etc/rc.conf
+
 
 # -----------------------------------------------------------------------------
 #
 # Apache
 #
-# Take a copy of whole /usr/local/etc/apache22, its the config directory.
+# Backup /usr/local/etc/apache22, its the config directory.
 #
-gm# cd /usr/ports/www/apache22 && make install clean
-gm# echo 'apache22_enable="YES"' >> /etc/rc.conf
-gm# vi /usr/local/etc/apache22/httpd.conf 
+cd /usr/ports/www/apache22 && make install clean
+echo 'apache22_enable="YES"' >> /etc/rc.conf
+vi /usr/local/etc/apache22/httpd.conf 
 
-#DO: Include config file for virtualhosts from httpd.conf
-gm# vi /usr/local/etc/apache22/extra/httpd-vhosts.conf
+# Include config file for virtualhosts from httpd.conf
+Include etc/apache22/extra/httpd-vhosts.conf
+
+# vi /usr/local/etc/apache22/extra/httpd-vhosts.conf
 <URL:http://httpd.apache.org/docs/2.2/vhosts/>
 <VirtualHost *:80>
     DocumentRoot "/usr/home/mos/htdocs/dbwebb.se"
@@ -43,7 +72,7 @@ gm# vi /usr/local/etc/apache22/extra/httpd-vhosts.conf
 </VirtualHost>
 
 
-gm# vi /usr/local/etc/apache22/Includes/httpd-hide-git-svn.conf 
+# vi /usr/local/etc/apache22/Includes/httpd-hide-git-svn.conf 
 <DirectoryMatch \.svn>
    Order allow,deny
    Deny from all
@@ -54,7 +83,8 @@ gm# vi /usr/local/etc/apache22/Includes/httpd-hide-git-svn.conf
    Deny from all
 </DirectoryMatch>
 
-#apachectl restart
+apachectl restart
+
 
 #
 # https
@@ -62,17 +92,18 @@ gm# vi /usr/local/etc/apache22/Includes/httpd-hide-git-svn.conf
 # http://onlamp.com/pub/a/onlamp/2008/03/04/step-by-step-configuring-ssl-under-apache.html
 #
 # Create certs
-gm#: openssl req -new -x509 -days 365 -sha1 -newkey rsa:1024 -nodes -keyout server.key -out server.crt -subj '/DC=se/DC=dbwebb/CN=ldap.dbwebb.se'
-gm# ls -l /usr/local/etc/apache22/server.*
+cd /usr/local/etc/apache22
+openssl req -new -x509 -days 365 -sha1 -newkey rsa:1024 -nodes -keyout server.key -out server.crt -subj '/DC=se/DC=dbwebb/CN=ldap.dbwebb.se'
+chmod 400 server.key 
+ls -l /usr/local/etc/apache22/server.*
 -rw-r--r--  1 root  wheel  993 Jun 10 09:32 /usr/local/etc/apache22/server.crt
 -r--------  1 root  wheel  887 Jun 10 09:32 /usr/local/etc/apache22/server.key
-gm# 
 
-gm# vi httpd.conf
+vi httpd.conf
 # Secure (SSL/TLS) connections
 Include etc/apache22/extra/httpd-ssl.conf
 
-#apachectl restart
+apachectl restart
 
 
 # -----------------------------------------------------------------------------
@@ -81,25 +112,28 @@ Include etc/apache22/extra/httpd-ssl.conf
 #
 # http://dev.mysql.com/doc/refman/5.1/en/mysql-installation-freebsd.html
 #
-gm# cd /usr/ports/databases/mysql51-client && make install clean
-gm# cd /usr/ports/databases/mysql51-server/ && make install clean
-gm# /usr/local/bin/mysql_install_db
-gm# chown -R mysql /var/db/mysql/
-gm# chgrp -R mysql /var/db/mysql/
-gm# /usr/local/bin/mysqld_safe -user=mysql &
-gm# mysqladmin shutdown -p
-gm# /usr/local/bin/mysqladmin -u root password newpassword
-gm# echo 'mysql_enable="YES"' >> /etc/rc.conf
+cd /usr/ports/databases/mysql51-client && make install clean
+cd /usr/ports/databases/mysql51-server/ && make install clean
+/usr/local/bin/mysql_install_db
+chown -R mysql /var/db/mysql/
+chgrp -R mysql /var/db/mysql/
+echo 'mysql_enable="YES"' >> /etc/rc.conf
+/usr/local/bin/mysqld_safe -user=mysql &
+/usr/local/bin/mysqladmin -u root password newpassword
+# mysqladmin shutdown -p
 
-#config
-mysql> SELECT User, Host, Password FROM mysql.user;
+# Configure
+# http://dev.mysql.com/doc/refman/5.1/en/post-installation.html
+#
+mysql -u root -p
 mysql> GRANT ALL ON *.* TO mos@localhost IDENTIFIED BY 'password';
-mysql> update mysql.user set
-Password = (select Password from mysql.user where User = 'root' and Host = 'localhost')
-where User = 'root';
-mysql> delete from mysql.user where User = '';
+mysql> SELECT User, Host, Password FROM mysql.user;
+mysql> SET PASSWORD FOR 'root'@'localhost' = PASSWORD('password');
+mysql> SET PASSWORD FOR 'root'@'kaprifolen.dbwebb.se' = PASSWORD('password');
+mysql> SET PASSWORD FOR 'root'@'127.0.0.1' = PASSWORD('password');
+mysql> DELETE FROM mysql.user WHERE User = '';
 
-gm# /usr/local/etc/rc.d/mysql-server restart
+/usr/local/etc/rc.d/mysql-server restart
 
 
 # -----------------------------------------------------------------------------
@@ -108,9 +142,9 @@ gm# /usr/local/etc/rc.d/mysql-server restart
 # 
 # Don't forget to check to build for apache.
 #
-gm# cd /usr/ports/lang/php5 && make config install clean
+cd /usr/ports/lang/php5 && make config install clean
 
-gm# cat /usr/local/etc/apache22/Includes/enable-php5.conf 
+cat /usr/local/etc/apache22/Includes/enable-php5.conf 
 AddType application/x-httpd-php .php
 AddType application/x-httpd-php-source .phps
 #AddType application/x-httpd-php .php .htm .html
@@ -118,11 +152,11 @@ AddType application/x-httpd-php-source .phps
 # Create the php.ini-file. Disable magic quotes, enable error reporting.
 # Test configuration using Utility/check_php_config.php
 
-gm# cd /usr/ports/www/php5-session && make install clean
-gm# cd /usr/ports/databases/php5-mysqli && make install clean
-gm# cd /usr/ports/net/php5-ldap && make install clean
+cd /usr/ports/www/php5-session && make install clean
+cd /usr/ports/databases/php5-mysqli && make install clean
+cd /usr/ports/net/php5-ldap && make install clean
 
-#apachectl restart
+apachectl restart
 
 
 # -----------------------------------------------------------------------------
@@ -228,7 +262,7 @@ auth            sufficient      /usr/local/lib/pam_ldap.se      no_warn
 account         required        /usr/local/lib/pam_ldap.so      no_warn ignore_authinfo_unavail ignore_unknown_user
 
 #
-# Not needed to set up nss to allow gettin guid&gid from LDAP
+# Not needed to set up nss to allow getting guid&gid from LDAP
 #
 gm# cd /usr/ports/net/nss_ldap/; make install clean;
 The nss_ldap module expects to find its configuration files at the
@@ -236,4 +270,3 @@ following paths:
 
 LDAP configuration:     /usr/local/etc/nss_ldap.conf
 LDAP secret (optional): /usr/local/etc/nss_ldap.secret
-

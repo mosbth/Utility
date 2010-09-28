@@ -110,13 +110,34 @@ if (function_exists('ldap_connect')) {
 //
 // Show output from phpinfo() if enabled
 //
+if(function_exists('sqlite_open')) {
+	$html .= "<p style='color:green'>sqlite IS enabled";
+} else {
+	$html .= "<p style='color:red'>sqlite IS NOT enabled";
+
+if(function_exists('sqlite3_open')) {
+	$html .= "<p style='color:green'>sqlite3 IS enabled";
+} else {
+	$html .= "<p style='color:red'>sqlite3 IS NOT enabled";
+}
+
+if(in_array("sqlite", PDO::getAvailableDrivers())) {
+	$html .= "<p style='color:green'>sqlite PDO driver IS enabled";
+} else {
+	$html .= "<p style='color:red'>sqlite PDO driver IS NOT enabled";
+}
+
+
+// -------------------------------------------------------------------------------------------
+//
+// Show output from phpinfo() if enabled
+//
 if(isset($_GET['phpinfo'])) {
 	echo phpinfo();
 	exit;
 } else {
 	$html .= "<p>phpinfo() might be enabled. <a href='?phpinfo=1'>Click to view</a></p>";
 }
-
 
 
 // -------------------------------------------------------------------------------------------
