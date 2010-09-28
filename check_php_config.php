@@ -14,7 +14,12 @@
 // 
 //
 
-$html="";
+$html=<<<EOD
+<h1>Test a PHP-configuration to check whats installed</h1>
+<p>This file is a part of the Utility project which can be downloaded from GitHub.
+<p><a href="http://github.com/mosbth/Utility">http://github.com/mosbth/Utility</a></p>
+EOD;
+
 
 // -------------------------------------------------------------------------------------------
 //
@@ -114,16 +119,17 @@ if(function_exists('sqlite_open')) {
 	$html .= "<p style='color:green'>sqlite IS enabled";
 } else {
 	$html .= "<p style='color:red'>sqlite IS NOT enabled";
+}
 
 if(function_exists('sqlite3_open')) {
 	$html .= "<p style='color:green'>sqlite3 IS enabled";
-} else {
+} else {
 	$html .= "<p style='color:red'>sqlite3 IS NOT enabled";
 }
 
-if(in_array("sqlite", PDO::getAvailableDrivers())) {
+if(class_exists('PDO') && in_array("sqlite", PDO::getAvailableDrivers())) {
 	$html .= "<p style='color:green'>sqlite PDO driver IS enabled";
-} else {
+} else {
 	$html .= "<p style='color:red'>sqlite PDO driver IS NOT enabled";
 }
 

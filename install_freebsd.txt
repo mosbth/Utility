@@ -155,6 +155,8 @@ AddType application/x-httpd-php-source .phps
 cd /usr/ports/www/php5-session && make install clean
 cd /usr/ports/databases/php5-mysqli && make install clean
 cd /usr/ports/net/php5-ldap && make install clean
+cd /usr/ports/databases/php5-pdo && make install clean
+cd /usr/ports/databases/php5-pdo_sqlite && make install clean
 
 apachectl restart
 
