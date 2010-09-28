@@ -18,6 +18,7 @@ $html=<<<EOD
 <h1>Test a PHP-configuration to check whats installed</h1>
 <p>This file is a part of the Utility project which can be downloaded from GitHub.
 <p><a href="http://github.com/mosbth/Utility">http://github.com/mosbth/Utility</a></p>
+<h2>Report</h2>
 EOD;
 
 
