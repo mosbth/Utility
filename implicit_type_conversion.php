@@ -1,5 +1,9 @@
 <p><a href="http://github.com/mosbth/Utility/blob/master/<?php echo basename(__FILE__); ?>"><em>This file is part of Utility project on GitHub</em></a>
 
+<h1>Testcase showing off type juggling in PHP</h1>
+
+<p><a href="http://php.net/manual/en/language.types.type-juggling.php">PHP manual on type juggling</a>
+
 <?php
 $ant = "2-1a";
 
