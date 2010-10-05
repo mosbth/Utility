@@ -106,15 +106,26 @@ if (function_exists('mysqli_connect')) {
 // LDAP
 //
 if (function_exists('ldap_connect')) {
-	$html .= "<p>LDAP IS enabled.</p>";
+	$html .= "<p style='color:green'>LDAP IS enabled.</p>";
 } else {
-	$html .= "<p>LDAP is NOT enabled.</p>";
+	$html .= "<p style='color:red'>LDAP is NOT enabled.</p>";
 }
 
 
 // -------------------------------------------------------------------------------------------
 //
-// Show output from phpinfo() if enabled
+// Is GD enabled on the system?
+//
+if(function_exists('gd_info')) {
+	$i = gd_info();
+	$html .= "<p style='color:green'>GD is enabled (version = {$i['GD Version']})";
+} else {
+	$html .= "<p style='color:red'>GD is not enabled";
+}
+
+// -------------------------------------------------------------------------------------------
+//
+// Is SQLite enabled?
 //
 if(function_exists('sqlite_open')) {
 	$html .= "<p style='color:green'>sqlite IS enabled";

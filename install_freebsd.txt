@@ -32,9 +32,10 @@ cd /usr/ports/sysutils/screen && make install clean
 cd /usr/ports/irc/irssi && make install clean
 cd /usr/ports/devel/git && make install clean
 cd /usr/ports/devel/subversion && make install clean
-cd /usr/ports/net/rsync/; make install clean:
+cd /usr/ports/net/rsync/ && make install clean
  add iconv support 
  add -atime
+cd /usr/ports/archivers/zip && make install clean
 
 sysutils & install manualpages Configure - Distributions - System Manual Pages
 
@@ -157,6 +158,7 @@ cd /usr/ports/databases/php5-mysqli && make install clean
 cd /usr/ports/net/php5-ldap && make install clean
 cd /usr/ports/databases/php5-pdo && make install clean
 cd /usr/ports/databases/php5-pdo_sqlite && make install clean
+cd /usr/ports/graphics/php5-gd && make install clean
 
 apachectl restart
 
