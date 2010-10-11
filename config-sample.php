@@ -38,5 +38,9 @@ $LDAP_DISABLED=true;  // true or false
 $SQLAID_DISABLED=true; // true or false
 $SQLAID_DIRECTORY='sqlaid'; // relatively script location
 
+//
+// File upload
+//
+$FILE_UPLOAD_DISABLED=true;  // true or false
 
 ?>
