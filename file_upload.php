@@ -86,7 +86,7 @@ if(!empty($_POST['doFileUpload'])) {
 	}
 	
 	// To debug
-	echo "<pre>"; print_r($_FILES); echo "</pre>";
+	//echo "<pre>"; print_r($_FILES); echo "</pre>";
 }
 
 
@@ -120,29 +120,28 @@ foreach($files as $val) {
 	if(is_file("$dir/$val") && isset($parts['extension']) && $parts['extension'] != 'php') {
 		$del = "";
 		if(is_writeable("$dir/$val")) {
-			$del = " <a href='?id=$id&amp;doRemoveImage=$val' title='Radera bilden'>x</a>";
+			$del = " <a href='?doRemoveImage=$val' title='Radera bilden'>x</a>";
 		}
 		$images	.= "<a href='$imageDir/$val' title='Visa bilden $imageDir/$val'>$val</a>{$del}<br>";
 	}
 }
 
+
 ?>
 
 <body>
-	<p>Följande bilder finns sparade:
+	<p><a href="<?php echo $imageDir; ?>">Följande bilder finns sparade</a>
 	<p><?php echo $images; ?></p>
 
-	<form class="standard w600" method=post>
+	<form enctype="multipart/form-data" action="?" method="POST">
 	 <fieldset>
 		<legend>Ladda upp egna bilder</legend>
 	
-		<form enctype="multipart/form-data" method="POST">
 			<!-- MAX_FILE_SIZE must precede the file input field -->
 			<input type="hidden" name="MAX_FILE_SIZE" value="9000000" />
 			<!-- Name of input element determines name in $_FILES array -->
 			<input name="userfile" type="file" />
 			<input type="submit" name="doFileUpload" value="Ladda upp" />
-		</form>
 		
 		<output><?php echo $output; ?></output>
 		
