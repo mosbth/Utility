@@ -52,6 +52,8 @@ function error_level_tostring($intval, $separator)
 
 $html .= "<p>Current level of error-reporting is: " . error_reporting() . "</p>";
 $html .= "<p>This means: " .  error_level_tostring(error_reporting(), ' ') . "</p>";
+$html .= "<p>display_startup_errors = " . ini_get('display_startup_errors') . "</p>";
+$html .= "<p>display_errors = " . ini_get('display_errors') . "</p>";
 
 
 // -------------------------------------------------------------------------------------------
