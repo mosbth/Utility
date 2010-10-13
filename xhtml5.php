@@ -17,7 +17,7 @@ $refToThisPage .= $_SERVER["SERVER_NAME"] . $serverPort . $_SERVER["REQUEST_URI"
     <title></title>
   </head>
   <body>
-   <p><a href="http://validator.nu/?doc=<?php echo $refToThisPage; >">This page validates as XHTML5 on validator.nu</a>.</p>
+   <p><a href="http://validator.nu/?doc=<?php echo $refToThisPage; ?>">This page validates as XHTML5 on validator.nu</a>.</p>
    <p><a href="source.php?file=xhtml5.php">Sourcecode</a></p>
   </body>
 </html>
