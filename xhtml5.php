@@ -8,7 +8,7 @@ header("content-type:$mime;charset=$charset");
     <title></title>
   </head>
   <body>
-   <p><ahref="">This page validates as XHTML5 on validator.nu</a>.</p>
+   <p><a href="">This page validates as XHTML5 on validator.nu</a>.</p>
    <p><a href="source.php?file=xhtml5.php">Sourcecode</a></p>
   </body>
 </html>
