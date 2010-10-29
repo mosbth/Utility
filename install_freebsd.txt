@@ -36,8 +36,9 @@ cd /usr/ports/net/rsync/ && make install clean
  add iconv support 
  add -atime
 cd /usr/ports/archivers/zip && make install clean
+cd /usr/ports/ftp/wget && make install clean
 
-sysutils & install manualpages Configure - Distributions - System Manual Pages
+sysinstall & install manualpages Configure - Distributions - System Manual Pages
 
 # have /tmp in memory
 echo 'tmpmfs="YES"' >> /etc/rc.conf
@@ -121,7 +122,7 @@ chgrp -R mysql /var/db/mysql/
 echo 'mysql_enable="YES"' >> /etc/rc.conf
 /usr/local/bin/mysqld_safe -user=mysql &
 /usr/local/bin/mysqladmin -u root password newpassword
-# mysqladmin shutdown -p
+mysqladmin shutdown -p
 
 # Configure
 # http://dev.mysql.com/doc/refman/5.1/en/post-installation.html
@@ -163,35 +164,35 @@ cd /usr/ports/graphics/php5-gd && make install clean
 apachectl restart
 
 
+
 # -----------------------------------------------------------------------------
 #
 # OpenLDAP, using TSL
 # 
 # Instructions from Utility/ldap.ldif
 #
-gm# cd /usr/ports/net/openldap24-server && make install clean
-gm# vi /usr/local/etc/openldap/slapd.conf
+cd /usr/ports/net/openldap24-server && make install clean
+vi /usr/local/etc/openldap/slapd.conf
+echo 'slapd_enable="YES"' >> /etc/rc.conf
 
-gm# echo 'slapd_enable="YES"' >> /etc/rc.conf
-
-gm# /usr/local/etc/rc.d/slapd start
-gm# sockstat -4 -p 389
+/usr/local/etc/rc.d/slapd start
+sockstat -4 -p 389
 
 
 # Install client (if not already installed)
-gm# cd /usr/ports/net/openldap24-client && make install clean
-gm# cd /usr/ports/sysutils/ldapvi && make install clean
+cd /usr/ports/net/openldap24-client && make install clean
+cd /usr/ports/sysutils/ldapvi && make install clean
 
 # Fill database with some content?
 #
 # Check if there is a namingContext
-# ldapsearch -x -b '' -s base '(objectclass=*)' namingContexts
+ldapsearch -x -b '' -s base '(objectclass=*)' namingContexts
 #
 # Add entries from file
-# ldapadd -x -D "cn=Manager,dc=dbwebb,dc=se" -W -f ldap.ldif
+ldapadd -x -D "cn=Manager,dc=dbwebb,dc=se" -W -f ldap.ldif
 #
 # Edit entries
-# ldapvi -D "cn=Manager,dc=dbwebb,dc=se" --discover
+ldapvi -D "cn=Manager,dc=dbwebb,dc=se" --discover
 
 
 # Check that it works from PHP?
@@ -199,30 +200,13 @@ gm# cd /usr/ports/sysutils/ldapvi && make install clean
 # http://dbwebb.se/utility/ldap.php
 
 
-# ------- OBSOLETE START ----------
-# OBSOLETE, use same certificate as apache instead.
-#
-# Enable TSL
-gm# vi /usr/local/etc/openldap/slapd.conf
-Add ---
-security ssf=128
-TLSCertificateFile    /usr/local/etc/openldap/ssl/cert.crt
-TLSCertificateKeyFile /usr/local/etc/openldap/ssl/cert.key
-TLSCACertificateFile  /usr/local/etc/openldap/ssl/cacert.crt
---- Stop add
-
-# Create and sign the certificates, store them in /usr/local/etc/openldap/ssl
-% openssl genrsa -out cert.key 1024
-% openssl req -new -key cert.key -out cert.csr
-% openssl x509 -req -in cert.csr -days 365 -signkey cert.key -out cert.crt
-# ------- OBSOLETE STOP ----------
-
 #
 # Enable TLS and SSL (ldaps://)
 #
-gm# vi /usr/local/etc/openldap/slapd.conf
+vi /usr/local/etc/openldap/slapd.conf
 Add ---
-security ssf=128
+#security ssf=128
+security tls=0
 TLSCertificateFile    /usr/local/etc/openldap/ssl/server.crt
 TLSCertificateKeyFile /usr/local/etc/openldap/ssl/server.key
 TLSCACertificateFile  /usr/local/etc/openldap/ssl/server.crt
@@ -231,23 +215,29 @@ TLSCACertificateFile  /usr/local/etc/openldap/ssl/server.crt
 # Copy the certificate from apache httpds or create a new ones
 # and store them in /usr/local/etc/openldap/ssl
 #
-gm#: openssl req -new -x509 -days 365 -sha1 -newkey rsa:1024 -nodes -keyout server.key -out server.crt -subj '/DC=se/DC=dbwebb/CN=ldap.dbwebb.se'
+openssl req -new -x509 -days 365 -sha1 -newkey rsa:1024 -nodes -keyout server.key -out server.crt -subj '/DC=se/DC=dbwebb/CN=ldap.dbwebb.se'
+chown ldap server.key
+chmod 400 server.key 
+ls -l /usr/local/etc/openldap/ssl
+total 4
+-rw-r--r--  1 root  wheel  993 Oct 29 04:53 server.crt
+-r--------  1 ldap  wheel  887 Oct 29 04:53 server.key
 
 # Start slapd to listen on both ldap:// and ldaps://
-gm# echo 'slapd_flags=\'-h "ldaps:/// ldap:///"\'' >> /etc/rc.conf
+echo 'slapd_flags=\'-h "ldaps:/// ldap:///"\'' >> /etc/rc.conf
 
-gm# /usr/local/etc/rc.d/slapd restart
-gm# sockstat -4 -p "389,636'
+/usr/local/etc/rc.d/slapd restart
+sockstat -4 -p "389,636"
 
 # Client issue to NOT validate self-signed server cert
-gm# vi /usr/local/etc/openldap/ldap.conf
+vi /usr/local/etc/openldap/ldap.conf
 Add ---
 TLS_REQCERT allow
 --- stop add
 
 # Test that TLS works using -Z
-gm# ldapsearch -Z -x -b '' -s base '(objectclass=*)' namingContexts
-gm# ldapvi -Z --tls allow -D "cn=Manager,dc=dbwebb,dc=se" --discover
+ldapsearch -Z -x -b '' -s base '(objectclass=*)' namingContexts
+ldapvi -Z --tls allow -D "cn=Manager,dc=dbwebb,dc=se" --discover
 # http://dbwebb.se/utility/ldap.php
 
 
