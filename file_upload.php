@@ -59,7 +59,7 @@ if($FILE_UPLOAD_DISABLED == true) {
 }
 
 if(!isset($imageDir)) {
-	die("<strong><em>sqlaid is enabled but missing directory to store files. Define \$imageDir and ensure its a writable directory.</em></strong>");
+	die("<strong><em>Fileupload is enabled but missing directory to store files. Define \$imageDir and ensure its a writable directory.</em></strong>");
 }
 
 $dir = dirname(__FILE__) . "/$imageDir";
