@@ -38,6 +38,7 @@ cd /usr/ports/net/rsync/ && make install clean
 cd /usr/ports/archivers/zip && make install clean
 cd /usr/ports/ftp/wget && make install clean
 cd /usr/ports/security/php5-hash ; make install clean
+cd /usr/ports/security/php5-filter ; make install clean
 
 
 sysinstall & install manualpages Configure - Distributions - System Manual Pages
