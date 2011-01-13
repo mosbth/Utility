@@ -37,9 +37,6 @@ cd /usr/ports/net/rsync/ && make install clean
  add -atime
 cd /usr/ports/archivers/zip && make install clean
 cd /usr/ports/ftp/wget && make install clean
-cd /usr/ports/security/php5-hash ; make install clean
-cd /usr/ports/security/php5-filter ; make install clean
-
 
 sysinstall & install manualpages Configure - Distributions - System Manual Pages
 
@@ -163,6 +160,11 @@ cd /usr/ports/net/php5-ldap && make install clean
 cd /usr/ports/databases/php5-pdo && make install clean
 cd /usr/ports/databases/php5-pdo_sqlite && make install clean
 cd /usr/ports/graphics/php5-gd && make install clean
+cd /usr/ports/security/php5-hash ; make install clean
+cd /usr/ports/security/php5-filter ; make install clean
+cd /usr/ports/textproc/php5-xml ; make install clean
+cd /usr/ports/converters/php5-mbstring ; make install clean
+cd /usr/ports/textproc/php5-ctype ; make install clean
 
 apachectl restart
 
