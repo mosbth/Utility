@@ -11,6 +11,14 @@
 //
 // Change history:
 // 
+// 2011-01-20: 
+// Can be included and integrated in an existing website where you already have a header 
+// and footer. Do like this in another file:
+// $sourceNoEcho=true;
+// include("source.php");
+// echo "<html><head><style type='text/css'>$sourceStyle</style></header>";
+// echo "<body>$sourceBody</body></html>";
+//
 // 2010-09-14: 
 // Thanks to Rocky. Corrected NOTICE when files had no extension.
 //
@@ -34,6 +42,17 @@
 // environment.
 //
 error_reporting(-1);
+
+// Should the result be printed or stored in variables?
+// Default is to print out the result, with header and everything.
+// If $sourceNoEcho is set, no printing of the result will be done. It will only be stored 
+// in the variables $sourceBody and $sourceStyle
+//
+if(!isset($sourceNoEcho)) {
+	$sourceNoEcho = null;
+}
+$sourceBody="";  // resulting html
+$sourceStyle=""; // css-style needed to print out the page
 
 // Separator between directories and files, change between Unix/Windows
 $SEPARATOR = DIRECTORY_SEPARATOR; 	// Using built-in PHP-constant for separator.
@@ -59,7 +78,7 @@ $SYNTAX = 'PHP'; 	// DEFAULT or PHP
 $SPACES = '  '; 	// Number of spaces to replace each \t
 
 // The link to this page. You may want to change it from relative link to absolute link.
-$HREF = 'source.php?';
+$HREF = '?';
 
 
 // -------------------------------------------------------------------------------------------
@@ -238,21 +257,16 @@ EOD;
 }
 
 
+
 // -------------------------------------------------------------------------------------------
 //
 // Create and print out the html-page
 //
-$title = "Show sourcecode";
-$charset = "utf-8";
-$language = "en";
- 
-$html = <<< EOD
-<!DOCTYPE html>
-<html lang="{$language}">
-<head>
-	<meta charset="{$charset}" />
-	<title>{$title}</title>
- 	<style>
+$pageTitle = "Show sourcecode";
+$pageCharset = "utf-8";
+$pageLanguage = "en";
+$sourceBody=$html;
+$sourceStyle=<<<EOD
  		div.container {
 			min-width: 40em;
 			font-family: monospace;
@@ -287,22 +301,28 @@ $html = <<< EOD
 			background: #f9f9f9;
 			padding: 0.5em 0.5em 0.5em 3.5em;
 		}
-	</style>
+EOD;
+
+
+if(!isset($sourceNoEcho)) {
+	// Print the header and page
+	header("Content-Type: text/html; charset={$pageCharset}");
+	echo <<<EOD
+<!DOCTYPE html>
+<html lang="{$pageLanguage}">
+<head>
+	<meta charset="{$pageCharset}" />
+	<title>{$pageTitle}</title>
+ 	<style>{$sourceStyle}</style>
 	<!--[if IE]> 
 		<script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>		
 	<![endif]-->
 </head>
 <body>
-	{$html}
+	{$sourceBody}
 </body>
-</html>
+</html>	
 EOD;
- 
- 
-// Print the header and page
-header("Content-Type: text/html; charset={$charset}");
-echo $html;
-exit;
 
-
-?>
+	exit;
+}
