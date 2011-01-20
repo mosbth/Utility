@@ -300,6 +300,7 @@ $sourceStyle=<<<EOD
 			border: solid 1px #999;
 			background: #f9f9f9;
 			padding: 0.5em 0.5em 0.5em 3.5em;
+			overflow:auto;
 		}
 EOD;
 
