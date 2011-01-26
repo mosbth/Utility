@@ -11,6 +11,12 @@
 //
 // Change history:
 // 
+// 2011-01-26: 
+// Added $sourceBasedir which makes it possible to set which basedir to use. This makes it
+// possible to store source.php in another place. It does not need to be in the same directory 
+// it displays. Use it like this (before including source.php):
+// $sourceBasedir=dirname(__FILE__);
+//
 // 2011-01-20: 
 // Can be included and integrated in an existing website where you already have a header 
 // and footer. Do like this in another file:
@@ -65,6 +71,9 @@ $HIDE_DB_USER_PASSWORD = TRUE; // TRUE or FALSE
 // Which directory to use as basedir for file listning, end with separator.
 // Default is current directory
 $BASEDIR = '.' . $SEPARATOR;
+if(isset($sourceBasedir)) {
+	$BASEDIR = $sourceBasedir . $SEPARATOR;
+}
 
 // Display pictures instead of their source, if they have a certain extension (filetype).
 $IMAGES = Array('png', 'gif', 'jpg', 'ico');
