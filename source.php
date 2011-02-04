@@ -11,6 +11,9 @@
 //
 // Change history:
 // 
+// 2011-02-04: 
+// Can now link to #file to start from filename.
+//
 // 2011-01-26: 
 // Added $sourceBasedir which makes it possible to set which basedir to use. This makes it
 // possible to store source.php in another place. It does not need to be in the same directory 
@@ -260,7 +263,7 @@ EOD;
 	}
 	
 	$html .= <<<EOD
-<h3>{$file}</h3>
+<h3 id="file"><a href="#file">{$file}</a></h3>
 {$content}
 EOD;
 }
