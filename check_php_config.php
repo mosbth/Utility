@@ -11,6 +11,7 @@
 // Author: Mikael Roos, mos@bth.se
 //
 // Change history:
+// 2011-02-08: Added test for putput buffering. 
 // 
 //
 
@@ -69,6 +70,14 @@ $html .= "<p>Current length of session is ini_get('session.gc_maxlifetime') : " 
 //
 $html .= "<p>get_magic_quotes_gpc() is : " . get_magic_quotes_gpc() . "</p>";
 $html .= "<p>get_magic_quotes_runtime() is : " . get_magic_quotes_runtime() . "</p>";
+
+
+// -------------------------------------------------------------------------------------------
+//
+// Output buffering
+//
+$html .= "<p>output_buffering is : " . ini_get('output_buffering') . "</p>";
+$html .= "<p>implicit_flush is : " . ini_get('implicit_flush') . "</p>";
 
 
 // -------------------------------------------------------------------------------------------
