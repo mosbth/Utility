@@ -165,6 +165,8 @@ cd /usr/ports/security/php5-filter ; make install clean
 cd /usr/ports/textproc/php5-xml ; make install clean
 cd /usr/ports/converters/php5-mbstring ; make install clean
 cd /usr/ports/textproc/php5-ctype ; make install clean
+cd /usr/ports/textproc/php5-simplexml ; make install clean
+cd /usr/ports/archivers/php5-zlib ; make install clean
 
 apachectl restart
 
