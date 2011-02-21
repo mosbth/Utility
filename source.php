@@ -11,6 +11,10 @@
 //
 // Change history:
 // 
+// 2011-02-21: 
+// Can now have same link to subdirs, independently on host os. Links that contain / or \ is
+// converted to DIRECTORY_SEPARATOR.
+//
 // 2011-02-04: 
 // Can now link to #file to start from filename.
 //
@@ -52,6 +56,9 @@
 //
 error_reporting(-1);
 
+// The link to this page. You may want to change it from relative link to absolute link.
+$HREF = '?';
+
 // Should the result be printed or stored in variables?
 // Default is to print out the result, with header and everything.
 // If $sourceNoEcho is set, no printing of the result will be done. It will only be stored 
@@ -63,13 +70,13 @@ if(!isset($sourceNoEcho)) {
 $sourceBody="";  // resulting html
 $sourceStyle=""; // css-style needed to print out the page
 
+// Show the content of files named config.php, except the rows containing DB_USER, DB_PASSWORD
+$HIDE_DB_USER_PASSWORD = TRUE; // TRUE or FALSE
+
 // Separator between directories and files, change between Unix/Windows
 $SEPARATOR = DIRECTORY_SEPARATOR; 	// Using built-in PHP-constant for separator.
 //$SEPARATOR = '/'; 	// Unix, Linux, MacOS, Solaris
 //$SEPARATOR = '\\'; 	// Windows 
-
-// Show the content of files named config.php, except the rows containing DB_USER, DB_PASSWORD
-$HIDE_DB_USER_PASSWORD = TRUE; // TRUE or FALSE
 
 // Which directory to use as basedir for file listning, end with separator.
 // Default is current directory
@@ -88,9 +95,6 @@ $IMAGES = Array('png', 'gif', 'jpg', 'ico');
 // CSS to be done.
 $SYNTAX = 'PHP'; 	// DEFAULT or PHP
 $SPACES = '  '; 	// Number of spaces to replace each \t
-
-// The link to this page. You may want to change it from relative link to absolute link.
-$HREF = '?';
 
 
 // -------------------------------------------------------------------------------------------
@@ -111,7 +115,7 @@ EOD;
 //
 // Verify the input variable _GET, no tampering with it
 //
-$currentdir	= isset($_GET['dir']) ? $_GET['dir'] : '';
+$currentdir	= isset($_GET['dir']) ? preg_replace('/[\/\\\]/', $SEPARATOR, $_GET['dir']) : '';
 
 $fullpath1 	= realpath($BASEDIR);
 $fullpath2 	= realpath($BASEDIR . $currentdir);
