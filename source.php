@@ -11,6 +11,11 @@
 //
 // Change history:
 // 
+// 2011-03-31: 
+// Feature to try and detect chacter encoding of file by using mb_detect_encoding (if available)
+// and by looking for UTF-8 BOM sequence in the start of the file. $encoding is set to contain the
+// found encoding.
+//
 // 2011-02-21: 
 // Can now have same link to subdirs, independently on host os. Links that contain / or \ is
 // converted to DIRECTORY_SEPARATOR.
@@ -189,6 +194,21 @@ if(isset($_GET['file'])) {
 	// Get the content of the file
 	$content = file_get_contents($dir . $SEPARATOR . $file);
 
+	// Try to detect character encoding
+	$encoding = null;
+
+	// Detect character encoding
+	if(function_exists('mb_detect_encoding')) {
+		if($res = mb_detect_encoding($content, "auto, ISO-8859-1", true)) {
+			$encoding = $res;
+		}		
+	}
+
+	// Is it BOM?
+	if(substr($content, 0, 3) == chr(0xEF) . chr(0xBB) . chr(0xBF)) {
+		$encoding .= " BOM";
+	}
+	
 	// Remove password and user from config.php, if enabled
 	if($HIDE_DB_USER_PASSWORD == TRUE && 
 		 ($file == 'config.php' || $file == 'config.php~')) {
@@ -246,7 +266,7 @@ if(isset($_GET['file'])) {
 <div class='container'>
 <div class='header'>
 <!-- {$i} lines ({$sloc} sloc) -->
-{$i} lines {$linkToDisplaySvg}
+{$i} lines  {$encoding} {$linkToDisplaySvg}
 </div>
 <div class='rows'>
 {$rownums}
