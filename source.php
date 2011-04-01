@@ -11,6 +11,9 @@
 //
 // Change history:
 // 
+// 2011-04-01: 
+// Added detection of line-endings, Unix-style (LF) or Windows-style (CRLF).
+//
 // 2011-03-31: 
 // Feature to try and detect chacter encoding of file by using mb_detect_encoding (if available)
 // and by looking for UTF-8 BOM sequence in the start of the file. $encoding is set to contain the
@@ -209,6 +212,18 @@ if(isset($_GET['file'])) {
 		$encoding .= " BOM";
 	}
 	
+	// Checking style of line-endings
+	$lineendings = null;
+	if(isset($encoding)) {
+		$lines = explode("\n", $content);
+		$l = strlen($lines[0]);
+		if(substr($lines[0], $l-1, 1) == "\r") {
+			$lineendings = " Windows (CRLF) ";
+		}else {
+			$lineendings = " Unix (LF) ";		
+		}
+	}
+	
 	// Remove password and user from config.php, if enabled
 	if($HIDE_DB_USER_PASSWORD == TRUE && 
 		 ($file == 'config.php' || $file == 'config.php~')) {
@@ -266,7 +281,7 @@ if(isset($_GET['file'])) {
 <div class='container'>
 <div class='header'>
 <!-- {$i} lines ({$sloc} sloc) -->
-{$i} lines  {$encoding} {$linkToDisplaySvg}
+{$i} lines  {$encoding} {$lineendings} {$linkToDisplaySvg}
 </div>
 <div class='rows'>
 {$rownums}
