@@ -79,6 +79,9 @@ if(isset($sourceBaseUrl)) {
 if(!isset($sourceNoEcho)) {
 	$sourceNoEcho = null;
 }
+if(!isset($sourceSubDir)) {
+	$sourceSubDir = null;
+}
 if(!isset($sourceNoIntro)) {
 	$sourceNoIntro=null; // Set to true to avoid printing title and ingress
 }
@@ -269,7 +272,7 @@ if(isset($_GET['file'])) {
 	// Display image if a valid image file
 	//
 	if(in_array($source_extension, $IMAGES)) {
-		$source_content = "<img src='{$source_currentdir}/{$file}' alt='[image not found]'>";
+		$source_content = "<img src='{$sourceSubDir}{$source_currentdir}/{$file}' alt='[image not found]'>";
 
 	//
 	// Show syntax if defined
