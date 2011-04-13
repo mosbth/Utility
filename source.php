@@ -272,7 +272,7 @@ if(isset($_GET['file'])) {
 	// Display image if a valid image file
 	//
 	if(in_array($source_extension, $IMAGES)) {
-		$source_content = "<img src='{$sourceSubDir}{$source_currentdir}/{$file}' alt='[image not found]'>";
+		$source_content = "<img src='{$sourceSubDir}{$source_currentdir}/{$source_file}' alt='[image not found]'>";
 
 	//
 	// Show syntax if defined
