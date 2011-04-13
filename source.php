@@ -11,6 +11,12 @@
 //
 // Change history:
 // 
+// 2011-04-13: 
+// Improved support for including source.php in another context where header and footer is already
+// set. Added $sourceSubDir, $sourceBaseUrl. Source.php can now display a subdirectory and will 
+// work where the directory structure contains symbolic links. Changed all variable names to 
+// isolate them. It's soon time to rewrite the whole code to version 2 of source.php...
+//
 // 2011-04-01: 
 // Added detection of line-endings, Unix-style (LF) or Windows-style (CRLF).
 //
