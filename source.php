@@ -75,7 +75,10 @@ $HREF = '?';
 if(!isset($sourceNoEcho)) {
 	$sourceNoEcho = null;
 }
-$sourceBody="";  // resulting html
+if(!isset($sourceNoIntro)) {
+	$sourceNoIntro=null; // Set to true to avoid printing title and ingress
+}
+$sourceBody="";  // resulting html, can be echoed out to print the result
 $sourceStyle=""; // css-style needed to print out the page
 
 // Show the content of files named config.php, except the rows containing DB_USER, DB_PASSWORD
@@ -109,7 +112,10 @@ $SPACES = '  '; 	// Number of spaces to replace each \t
 //
 // Page specific code
 //
-$html = <<<EOD
+if($sourceNoIntro) {
+	$html = "";
+} else {
+	$html = <<<EOD
 <header>
 <h1>Show sourcecode</h1>
 <p>
@@ -117,6 +123,7 @@ The following files exists in this folder. Click to view.
 </p>
 </header>
 EOD;
+}
 
 
 // -------------------------------------------------------------------------------------------
