@@ -117,9 +117,9 @@ $SPACES = '  '; 	// Number of spaces to replace each \t
 // Page specific code
 //
 if($sourceNoIntro) {
-	$html = "";
+	$source_html = "";
 } else {
-	$html = <<<EOD
+	$source_html = <<<EOD
 <header>
 <h1>Show sourcecode</h1>
 <p>
@@ -134,28 +134,28 @@ EOD;
 //
 // Verify the input variable _GET, no tampering with it
 //
-$currentdir	= isset($_GET['dir']) ? preg_replace('/[\/\\\]/', $SEPARATOR, $_GET['dir']) : '';
+$source_currentdir	= isset($_GET['dir']) ? preg_replace('/[\/\\\]/', $SEPARATOR, $_GET['dir']) : '';
 
-$fullpath1 	= realpath($BASEDIR);
-$fullpath2 	= realpath($BASEDIR . $currentdir);
-$len = strlen($fullpath1);
-if(	strncmp($fullpath1, $fullpath2, $len) !== 0 ||
-	strcmp($currentdir, substr($fullpath2, $len+1)) !== 0 ) {
+$source_fullpath1 	= realpath($BASEDIR);
+$source_fullpath2 	= realpath($BASEDIR . $source_currentdir);
+$source_len = strlen($source_fullpath1);
+if(	strncmp($source_fullpath1, $source_fullpath2, $source_len) !== 0 ||
+	strcmp($source_currentdir, substr($source_fullpath2, $source_len+1)) !== 0 ) {
 	die('Tampering with directory?');
 }
-$fullpath = $fullpath2;
-$currpath = substr($fullpath2, $len+1);
+$source_fullpath = $source_fullpath2;
+$source_currpath = substr($source_fullpath2, $source_len+1);
 
 
 // -------------------------------------------------------------------------------------------
 //
 // Show the name of the current directory
 //
-$start		= basename($fullpath1);
-$dirname 	= basename($fullpath);
-$html .= <<<EOD
+$source_start		= basename($source_fullpath1);
+$source_dirname 	= basename($source_fullpath);
+$source_html .= <<<EOD
 <p>
-<a href='{$HREF}dir='>{$start}</a>{$SEPARATOR}{$currpath}
+<a href='{$HREF}dir='>{$source_start}</a>{$SEPARATOR}{$source_currpath}
 </p>
 
 EOD;
@@ -165,140 +165,140 @@ EOD;
 //
 // Open and read a directory, show its content
 //
-$dir 	= $fullpath;
-$curdir1 = empty($currpath) ? "" : "{$currpath}{$SEPARATOR}";
-$curdir2 = empty($currpath) ? "" : "{$currpath}";
+$source_dir 	= $source_fullpath;
+$source_curdir1 = empty($source_currpath) ? "" : "{$source_currpath}{$SEPARATOR}";
+$source_curdir2 = empty($source_currpath) ? "" : "{$source_currpath}";
 
-$list = Array();
-if(is_dir($dir)) {
-    if ($dh = opendir($dir)) {
-        while (($file = readdir($dh)) !== false) {
-        	if($file != '.' && $file != '..' && $file != '.svn' && $file != '.git' && $file != '.htaccess') {
-        		$curfile = $fullpath . $SEPARATOR . $file;
-        		if(is_dir($curfile)) {
-          	  		$list[$file] = "<a href='{$HREF}dir={$curdir1}{$file}'>{$file}{$SEPARATOR}</a>";
-          	  	} else if(is_file($curfile)) {
-          	  	  $list[$file] = "<a href='{$HREF}dir={$curdir2}&amp;file={$file}'>{$file}</a>";
+$source_list = Array();
+if(is_dir($source_dir)) {
+    if ($source_dh = opendir($source_dir)) {
+        while (($source_file = readdir($source_dh)) !== false) {
+        	if($source_file != '.' && $source_file != '..' && $source_file != '.svn' && $source_file != '.git' && $source_file != '.htaccess') {
+        		$source_curfile = $source_fullpath . $SEPARATOR . $source_file;
+        		if(is_dir($source_curfile)) {
+          	  		$source_list[$source_file] = "<a href='{$HREF}dir={$source_curdir1}{$source_file}'>{$source_file}{$SEPARATOR}</a>";
+          	  	} else if(is_file($source_curfile)) {
+          	  	  $source_list[$source_file] = "<a href='{$HREF}dir={$source_curdir2}&amp;file={$source_file}'>{$source_file}</a>";
           	  	}
           	 }
         }
-        closedir($dh);
+        closedir($source_dh);
     }
 }
 
-ksort($list);
+ksort($source_list);
 
-$html .= '<p>';
-foreach($list as $val => $key) {
-	$html .= "{$key}<br />\n";
+$source_html .= '<p>';
+foreach($source_list as $source_val => $source_key) {
+	$source_html .= "{$source_key}<br />\n";
 }
-$html .= '</p>';
+$source_html .= '</p>';
 
 
 // -------------------------------------------------------------------------------------------
 //
 // Show the content of a file, if a file is set
 //
-$dir 	= $fullpath;
-$file	= "";
+$source_dir 	= $source_fullpath;
+$source_file	= "";
 
 if(isset($_GET['file'])) {
-	$file = basename($_GET['file']);
+	$source_file = basename($_GET['file']);
 
 	// Get the content of the file
-	$content = file_get_contents($dir . $SEPARATOR . $file);
+	$source_content = file_get_contents($source_dir . $SEPARATOR . $source_file);
 
 	// Try to detect character encoding
-	$encoding = null;
+	$source_encoding = null;
 
 	// Detect character encoding
 	if(function_exists('mb_detect_encoding')) {
-		if($res = mb_detect_encoding($content, "auto, ISO-8859-1", true)) {
-			$encoding = $res;
+		if($source_res = mb_detect_encoding($source_content, "auto, ISO-8859-1", true)) {
+			$source_encoding = $source_res;
 		}		
 	}
 
 	// Is it BOM?
-	if(substr($content, 0, 3) == chr(0xEF) . chr(0xBB) . chr(0xBF)) {
-		$encoding .= " BOM";
+	if(substr($source_content, 0, 3) == chr(0xEF) . chr(0xBB) . chr(0xBF)) {
+		$source_encoding .= " BOM";
 	}
 	
 	// Checking style of line-endings
-	$lineendings = null;
-	if(isset($encoding)) {
-		$lines = explode("\n", $content);
-		$l = strlen($lines[0]);
-		if(substr($lines[0], $l-1, 1) == "\r") {
-			$lineendings = " Windows (CRLF) ";
+	$source_lineendings = null;
+	if(isset($source_encoding)) {
+		$source_lines = explode("\n", $source_content);
+		$source_l = strlen($source_lines[0]);
+		if(substr($source_lines[0], $source_l-1, 1) == "\r") {
+			$source_lineendings = " Windows (CRLF) ";
 		}else {
-			$lineendings = " Unix (LF) ";		
+			$source_lineendings = " Unix (LF) ";		
 		}
 	}
 	
 	// Remove password and user from config.php, if enabled
 	if($HIDE_DB_USER_PASSWORD == TRUE && 
-		 ($file == 'config.php' || $file == 'config.php~')) {
+		 ($source_file == 'config.php' || $source_file == 'config.php~')) {
 
-		$pattern[0] 	= '/(DB_PASSWORD|DB_USER)(.+)/';
-		$replace[0] 	= '/* <em>\1,  is removed and hidden for security reasons </em> */ );';
+		$source_pattern[0] 	= '/(DB_PASSWORD|DB_USER)(.+)/';
+		$source_replace[0] 	= '/* <em>\1,  is removed and hidden for security reasons </em> */ );';
 		
-		$content = preg_replace($pattern, $replace, $content);
+		$source_content = preg_replace($source_pattern, $source_replace, $source_content);
 	}
 	
 	//
 	// Display image if a valid image file
 	//
-	$pathParts = pathinfo($dir . $SEPARATOR . $file);
-	$extension = isset($pathParts['extension']) ? strtolower($pathParts['extension']) : '';
+	$source_pathParts = pathinfo($source_dir . $SEPARATOR . $source_file);
+	$source_extension = isset($source_pathParts['extension']) ? strtolower($source_pathParts['extension']) : '';
 
 	//
 	// Display svg-image or enable link to display svg-image.
 	//
-	$linkToDisplaySvg = "";
-	if($extension == 'svg') {
+	$source_linkToDisplaySvg = "";
+	if($source_extension == 'svg') {
 		if(isset($_GET['displaysvg'])) {
 			header("Content-type: image/svg+xml");
-			echo $content;
+			echo $source_content;
 			exit;		
 		} else {
-			$linkToDisplaySvg = "<a href='{$_SERVER['REQUEST_URI']}&displaysvg'>Display as SVG</a>";
+			$source_linkToDisplaySvg = "<a href='{$_SERVER['REQUEST_URI']}&displaysvg'>Display as SVG</a>";
 		}
 	}
 	
 	//
 	// Display image if a valid image file
 	//
-	if(in_array($extension, $IMAGES)) {
-		$content = "<img src='{$currentdir}/{$file}' alt='[image not found]'>";
+	if(in_array($source_extension, $IMAGES)) {
+		$source_content = "<img src='{$currentdir}/{$file}' alt='[image not found]'>";
 
 	//
 	// Show syntax if defined
 	//
 	} elseif($SYNTAX == 'PHP') {
-		$content = str_replace("\t", $SPACES, $content);
-		$content = highlight_string($content, TRUE);
-		$sloc = 0;
-		$i=0;
-		$rownums = "";
-		$text = "";
-		$a = explode('<br />', $content);		
-		foreach($a as $row) {
-			$i++;
-			$sloc += (empty($row)) ? 0 : 1;
-			$rownums .= "<a id='L{$i}' href='#L{$i}'>{$i}</a><br />";
-			$text .= $row . '<br />';
+		$source_content = str_replace("\t", $SPACES, $source_content);
+		$source_content = highlight_string($source_content, TRUE);
+		$source_sloc = 0;
+		$source_i=0;
+		$source_rownums = "";
+		$source_text = "";
+		$source_a = explode('<br />', $source_content);		
+		foreach($source_a as $source_row) {
+			$source_i++;
+			$source_sloc += (empty($source_row)) ? 0 : 1;
+			$source_rownums .= "<a id='L{$source_i}' href='#L{$source_i}'>{$source_i}</a><br />";
+			$source_text .= $source_row . '<br />';
 		}
-		$content = <<< EOD
+		$source_content = <<< EOD
 <div class='container'>
 <div class='header'>
-<!-- {$i} lines ({$sloc} sloc) -->
-{$i} lines  {$encoding} {$lineendings} {$linkToDisplaySvg}
+<!-- {$source_i} lines ({$source_sloc} sloc) -->
+{$source_i} lines  {$source_encoding} {$source_lineendings} {$source_linkToDisplaySvg}
 </div>
 <div class='rows'>
-{$rownums}
+{$source_rownums}
 </div>
 <div class='code'>
-{$text}
+{$source_text}
 </div>
 </div>
 EOD;
@@ -308,13 +308,13 @@ EOD;
 	// DEFAULT formatting
 	//
 	else {
-		$content = htmlspecialchars($content);
-		$content = "<pre>{$content}</pre>";
+		$source_content = htmlspecialchars($source_content);
+		$source_content = "<pre>{$source_content}</pre>";
 	}
 	
-	$html .= <<<EOD
-<h3 id="file"><a href="#file">{$file}</a></h3>
-{$content}
+	$source_html .= <<<EOD
+<h3 id="file"><a href="#file">{$source_file}</a></h3>
+{$source_content}
 EOD;
 }
 
@@ -324,10 +324,10 @@ EOD;
 //
 // Create and print out the html-page
 //
-$pageTitle = "Show sourcecode";
-$pageCharset = "utf-8";
-$pageLanguage = "en";
-$sourceBody=$html;
+$source_pageTitle = "Show sourcecode";
+$source_pageCharset = "utf-8";
+$source_pageLanguage = "en";
+$sourceBody=$source_html;
 $sourceStyle=<<<EOD
  		div.container {
 			min-width: 40em;
@@ -369,13 +369,13 @@ EOD;
 
 if(!isset($sourceNoEcho)) {
 	// Print the header and page
-	header("Content-Type: text/html; charset={$pageCharset}");
+	header("Content-Type: text/html; charset={$source_pageCharset}");
 	echo <<<EOD
 <!DOCTYPE html>
-<html lang="{$pageLanguage}">
+<html lang="{$source_pageLanguage}">
 <head>
-	<meta charset="{$pageCharset}" />
-	<title>{$pageTitle}</title>
+	<meta charset="{$source_pageCharset}" />
+	<title>{$source_pageTitle}</title>
  	<style>{$sourceStyle}</style>
 	<!--[if IE]> 
 		<script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>		
