@@ -137,14 +137,17 @@ EOD;
 //
 // Verify the input variable _GET, no tampering with it
 //
-$source_currentdir	= isset($_GET['dir']) ? preg_replace('/[\/\\\]/', $SEPARATOR, $_GET['dir']) : '';
+$source_currentdir	= isset($_GET['dir']) ? preg_replace('/[\/\\\]/', $SEPARATOR, strip_tags(trim($_GET['dir']))) : '';
 
 $source_fullpath1 	= realpath($BASEDIR);
 $source_fullpath2 	= realpath($BASEDIR . $source_currentdir);
 $source_len = strlen($source_fullpath1);
 if(	strncmp($source_fullpath1, $source_fullpath2, $source_len) !== 0 ||
 	strcmp($source_currentdir, substr($source_fullpath2, $source_len+1)) !== 0 ) {
-	die('Tampering with directory?');
+	
+	if(preg_match("/\.\./", $source_currentdir)) {
+		die('Tampering with directory?');
+	}
 }
 $source_fullpath = $source_fullpath2;
 $source_currpath = substr($source_fullpath2, $source_len+1);
