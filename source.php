@@ -65,7 +65,11 @@
 error_reporting(-1);
 
 // The link to this page. You may want to change it from relative link to absolute link.
-$HREF = '?';
+if(isset($sourceBaseUrl)) {
+	$HREF = $sourceBaseUrl;
+} else {
+	$HREF = '?';
+}
 
 // Should the result be printed or stored in variables?
 // Default is to print out the result, with header and everything.
