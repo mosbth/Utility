@@ -41,7 +41,235 @@ cd /usr/ports/ftp/wget && make install clean
 sysinstall & install manualpages Configure - Distributions - System Manual Pages
 
 # have /tmp in memory
-echo 'tmpmfs="YES"' >> /etc/rc.conf
+# man mdmfs
+echo 'tmpfs="YES"' >> /etc/rc.conf
+echo 'tmpsize="512M"' >> /etc/rc.conf
+echo 'tmpmfs_flags="-S"' >> /etc/rc.conf
+
+# addons to .cshrc
+setenv IRCNAME "Mikael Roos" 
+setenv LC_CTYPE sv_SE.UTF-8
+set prompt = '%m%~: '
+alias ls ls -F
+unset autologout
+
+# ssh on additional port
+vi /etc/ssh/sshd_config
+/etc/rc.d/sshd restart
+
+
+# -----------------------------------------------------------------------------
+#
+# Adding disks
+#
+# http://www.freebsd.org/doc/handbook/disks-adding.html
+#
+
+
+# -----------------------------------------------------------------------------
+#
+# Working with Jails
+#
+# http://www.freebsd.org/doc/handbook/jails.html
+#
+
+# create file src.config.jail
+# http://forums.freebsd.org/showthread.php?t=12022
+# src for jail
+WITHOUT_ACCT="YES"
+WITHOUT_ACPI="YES"
+WITHOUT_AMD="YES"
+WITHOUT_APM="YES"
+WITHOUT_ASSERT_DEBUG="YES"
+WITHOUT_AT="YES"
+WITHOUT_ATM="YES"
+WITHOUT_AUDIT="YES"
+WITHOUT_AUTHPF="YES"
+WITHOUT_BIND_DNSSEC="YES"
+WITHOUT_BIND_ETC="YES"  
+WITHOUT_BIND_LIBS_LWRES="YES"   
+WITHOUT_BIND_MTREE="YES"
+WITHOUT_BIND_NAMED="YES"
+WITHOUT_BLUETOOTH="YES" 
+WITHOUT_BOOT="YES"
+WITHOUT_BSNMP="YES"
+WITHOUT_CALENDAR="YES"
+WITHOUT_CDDL="YES"
+WITHOUT_CTM="YES"
+WITHOUT_CVS="YES"
+WITHOUT_DICT="YES"
+WITHOUT_EXAMPLES="YES"  
+WITHOUT_FLOPPY="YES"
+WITHOUT_FORTH="YES"
+WITHOUT_FREEBSD_UPDATE="YES"
+WITHOUT_GAMES="YES"
+WITHOUT_GDB="YES"
+WITHOUT_GPIB="YES"
+WITHOUT_GSSAPI="YES"
+WITHOUT_HTML="YES"
+WITHOUT_INET6="YES"
+WITHOUT_IPFILTER="YES"  
+WITHOUT_IPFW="YES"
+WITHOUT_IPX="YES"
+WITHOUT_JAIL="YES"
+WITHOUT_KERBEROS="YES"  
+WITHOUT_KVM="YES"
+WITHOUT_LEGACY_CONSOLE="YES"
+WITHOUT_LIB32="YES"
+WITHOUT_LPR="YES"
+WITHOUT_MAIL="YES"
+WITHOUT_MAILWRAPPER="YES"
+WITHOUT_MAN="YES"
+WITHOUT_NCP="YES"
+WITHOUT_NDIS="YES"
+WITHOUT_NETCAT="YES"
+WITHOUT_NIS="YES"
+WITHOUT_NLS="YES"
+WITHOUT_NLS_CATALOGS="YES"
+WITHOUT_NS_CACHING="YES"
+WITHOUT_NTP="YES"
+WITHOUT_PF="YES"
+WITHOUT_PMC="YES"
+WITHOUT_PPP="YES"
+WITHOUT_PROFILE="YES"   
+WITHOUT_QUOTAS="YES"
+WITHOUT_RCMDS="YES"
+WITHOUT_RCS="YES"
+WITHOUT_RESCUE="YES"
+WITHOUT_ROUTED="YES"
+WITHOUT_SENDMAIL="YES"  
+WITHOUT_SHAREDOCS="YES" 
+WITHOUT_SYSCONS="YES"   
+WITHOUT_SYSINSTALL="YES"
+WITHOUT_TELNET="YES"
+WITHOUT_USB="YES"
+WITHOUT_WIRELESS="YES"  
+WITHOUT_WPA_SUPPLICANT_EAPOL="YES"
+WITHOUT_ZFS="YES"
+
+
+# Retrieve sources for FreeBSD
+sysutils Configure Distributions Src All
+
+# http://www.freebsd.org/doc/handbook/jails-build.html
+# http://www.freebsd.org/doc/handbook/jails-application.html
+# 1. prepare and build src
+mkdir /home/j /home/j/mroot
+cd /usr/src
+make buildworld __MAKE_CONF=/~mos/jail/src.config.jail
+make installworld DESTDIR=/home/j/mroot __MAKE_CONF=/~mos/jail/src.config.jail
+
+# 2. prepare jail ports collection
+cd /home/j/mroot
+mkdir usr/ports
+portsnap -p /home/j/mroot/usr/ports fetch extract
+# cd /usr/ports/sysutils/cpdup && make install clean
+cpdup /usr/src /home/j/mroot/usr/src
+
+# 3. Create a skeleton for the read-write portion of the system:
+mkdir /home/j/skel /home/j/skel/home /home/j/skel/usr-X11R6 /home/j/skel/distfiles
+mv etc /home/j/skel
+mv usr/local /home/j/skel/usr-local
+mv tmp /home/j/skel
+mv var /home/j/skel
+mv root /home/j/skel
+
+#  4. Use mergemaster to install missing configuration files. 
+# Then get rid of the extra directories that mergemaster creates:
+mergemaster -t /home/j/skel/var/tmp/temproot -D /home/j/skel -i
+cd /home/j/skel
+rm -R bin boot lib libexec mnt proc rescue sbin sys usr dev
+
+# 5. Now, symlink the read-write file system to the read-only file system. 
+# Please make sure that the symlinks are created in the correct s/ locations. 
+# Real directories or the creation of directories in the wrong locations will cause the installation to fail.
+cd /home/j/mroot
+mkdir s
+ln -s s/etc etc
+ln -s s/home home
+ln -s s/root root
+ln -s ../s/usr-local usr/local
+ln -s ../s/usr-X11R6 usr/X11R6
+ln -s ../../s/distfiles usr/ports/distfiles
+ln -s s/tmp tmp
+ln -s s/var var
+
+# 6. As a last step, create a generic /home/j/skel/etc/make.conf with its contents as shown below:
+cat > /home/j/skel/etc/make.conf 
+WRKDIRPREFIX?=  /s/portbuild
+
+#
+# Now we have a jail template. Lets setup our first jail.
+#
+
+# 1. Add to /etc/fstab
+/home/j/mroot   /home/j/www     nullfs  ro  0   0
+/home/js/www    /home/j/www/s   nullfs  rw  0   0
+
+# 2. Configure in /etc/rc.conf
+vi /etc/fstab
+# Jail general
+jail_enable="YES"
+jail_set_hostname_allow="NO"
+jail_list="ns mail www"
+# Specific jail config
+jail_www_hostname="www.example.org"
+jail_www_ip="10.0.0.10"
+jail_www_rootdir="/usr/home/j/www"
+jail_www_devfs_enable="YES"
+
+# 3. Create mountpoint
+mkdir /home/j/www
+
+# 4. Install the read-write template into each jail. 
+mkdir /home/js
+cpdup /home/j/skel /home/js/www
+
+# 5. In this phase, the jails are built and prepared to run. 
+# First, mount the required file systems for each jail, and then start them using the /etc/rc.d/jail script:
+mount -a
+/etc/rc.d/jail start
+/etc/rc.d/jail start www
+
+jls
+jexec 3 tcsh
+
+# Shutdown jail?
+jexec 3 sh /etc/rc.shutdown
+
+#
+# Setup ip aliases for each jail
+#
+#ifconfig re0 10.0.0.1 netmask 255.255.255.255 alias
+
+vi /etc/rc.conf
+# IP aliases
+ifconfig_re0_alias0="10.0.0.1 netmask 255.255.255.255"
+
+/etc/rc.d/netif restart && /etc/rc.d/routing restart
+
+#
+# allow ping in jails
+#
+vi /etc/sysctl.conf
+security.jail.allow_raw_sockets=1
+/etc/rc.d/sysctl restart
+
+restart the jails.
+
+
+
+# -----------------------------------------------------------------------------
+#
+# Nginx
+#
+# http://wiki.nginx.org/Main
+# http://forums.freebsd.org/showthread.php?t=4422
+#
+cd /usr/ports/www/nginx; make install clean
+echo 'nginx_enable="YES"' >> /etc/rc.conf
+vi /usr/local/etc/nginx/nginx.conf
+/usr/local/etc/rc.d/nginx start
 
 
 # -----------------------------------------------------------------------------
@@ -175,9 +403,62 @@ cd /usr/ports/security/php5-hash ; make install clean
 cd /usr/ports/textproc/php5-dom ; make install clean
 cd /usr/ports/devel/php5-tokenizer ; make install clean
 cd /usr/ports/converters/php5-mbstring ; make install clean
+cd /usr/ports/ftp/php5-curl ; make install clean
+cd /usr/ports/net/php5-sockets ; make install clean
 
 apachectl restart
 
+
+# -----------------------------------------------------------------------------
+#
+# Drupal
+# 
+#
+# download and install drush in $HOME/bin
+# http://drupal.org/project/drush
+cd ~/bin/git
+git clone --branch 7.x-4.x http://git.drupal.org/project/drush.git
+cd ~/bin/git; ln -s git/drush/drush
+cd /usr/ports/devel/bazaar-ng && make config install clean
+
+#
+# or take from ports (did not work for me)
+#
+cd /usr/ports/www/drush && make config install clean
+cd /usr/ports//devel/pear-Console_Table && make config install clean
+
+# install a clean site
+drush --drupal-project-rename=dbwebb.se/betapal dl drupal-7.0
+
+
+# Install drupal using GIT
+git clone --branch 7.x http://git.drupal.org/project/drupal.git
+cd drupal; git checkout -b 72 7.2
+
+cd sites; cp -r default dbwebb.se.betapal; 
+cd dbwebb.se.betapal
+chmod 777 .; cp default.settings.php  settings.php; chmod 666 settings.php
+
+#installl it through web
+http://dbwebb.se/betapal/
+
+chmod 644 settings.php; chmod 755 .
+
+# Install modules
+git clone --branch 7.x-3.x http://git.drupal.org/project/views.git
+git clone --branch 7.x-1.x http://git.drupal.org/project/ctools.git
+git clone --branch 7.x-2.x http://git.drupal.org/project/advanced_forum.git
+git clone --branch 7.x-2.x http://git.drupal.org/project/ldap.git
+git checkout -b 710beta1 7.x-1.0-beta1
+
+#git clone --branch 6.x-3.x http://git.drupal.org/project/wysiwyg.git
+git clone http://git.drupal.org/project/wysiwyg.git
+#git clone --branch 6.x-1.x http://git.drupal.org/project/imce_wysiwyg.git
+git clone http://git.drupal.org/project/imce_wysiwyg.git
+git clone --branch 7.x-1.x http://git.drupal.org/project/imce.git
+
+#
+Added taxenomy for Material
 
 
 # -----------------------------------------------------------------------------
@@ -279,3 +560,32 @@ following paths:
 
 LDAP configuration:     /usr/local/etc/nss_ldap.conf
 LDAP secret (optional): /usr/local/etc/nss_ldap.secret
+
+
+# ---------------------------------------------------------------------------------
+#
+# Install qwebirc 
+#
+# http://qwebirc.org/faq
+# http://www.cripperz.sg/index.php/forum/21-Ubuntu-Linux/265--KB--QwebIRC-Installation-quick-guide.html
+#
+cd /usr/ports/irc/qwebirc/ ; make install clean
+cd /usr/ports/dns/py-twistedNames && make install clean
+cd /usr/ports/mail/py-twistedMail && make install clean
+cd /usr/ports/net-im/py-twistedWords && make install clean
+
+# optional, recommended
+cd /usr/ports/devel/mercurial && make install clean
+cd /usr/ports/java/linux-sun-jre16 && make install TZUPDATE=off clean
+
+// Install using hd
+$ cd ~/
+$ hg clone bitbucket.org/slug/qwebirc
+$ cd qwebirc
+$ hg up -C stable
+$ hg pull
+$ hg up
+
+# Configure & start
+config.py
+python compile.py
