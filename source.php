@@ -11,6 +11,10 @@
 //
 // Change history:
 // 
+// 2011-05-31: 
+// The update 2011-04-13 which supported follow symlinks has security issues. The follow of 
+// symlinks, where destination path (realpath) is not below $BASEPATH, is disabled.
+//
 // 2011-04-13: 
 // Improved support for including source.php in another context where header and footer is already
 // set. Added $sourceSubDir, $sourceBaseUrl. Source.php can now display a subdirectory and will 
@@ -104,7 +108,7 @@ $SEPARATOR = DIRECTORY_SEPARATOR; 	// Using built-in PHP-constant for separator.
 
 // Which directory to use as basedir for file listning, end with separator.
 // Default is current directory
-$BASEDIR = '.' . $SEPARATOR;
+$BASEDIR = __DIR__ . $SEPARATOR;
 if(isset($sourceBasedir)) {
 	$BASEDIR = $sourceBasedir . $SEPARATOR;
 }
@@ -148,12 +152,16 @@ $source_currentdir	= isset($_GET['dir']) ? preg_replace('/[\/\\\]/', $SEPARATOR,
 $source_fullpath1 	= realpath($BASEDIR);
 $source_fullpath2 	= realpath($BASEDIR . $source_currentdir);
 $source_len = strlen($source_fullpath1);
+
+if(!(is_dir($source_fullpath1) && is_dir($source_fullpath2))) {
+	die('Not a directory.');
+}
+
 if(	strncmp($source_fullpath1, $source_fullpath2, $source_len) !== 0 ||
 	strcmp($source_currentdir, substr($source_fullpath2, $source_len+1)) !== 0 ) {
 	
-	if(preg_match("/\.\./", $source_currentdir)) {
-		die('Tampering with directory?');
-	}
+	die('Tampering with directory?');
+	//if(preg_match("/\.\./", $source_currentdir)) {}
 }
 $source_fullpath = $source_fullpath2;
 $source_currpath = substr($source_fullpath2, $source_len+1);
@@ -216,7 +224,12 @@ $source_file	= "";
 
 if(isset($_GET['file'])) {
 	$source_file = basename($_GET['file']);
-
+	$source_filename = $source_dir . $SEPARATOR . $source_file;
+	
+	if(!is_file($source_filename)) {
+		die("The file is not a regular file.");
+	}
+	
 	// Get the content of the file
 	$source_content = file_get_contents($source_dir . $SEPARATOR . $source_file);
 
