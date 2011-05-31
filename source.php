@@ -108,7 +108,7 @@ $SEPARATOR = DIRECTORY_SEPARATOR; 	// Using built-in PHP-constant for separator.
 
 // Which directory to use as basedir for file listning, end with separator.
 // Default is current directory
-$BASEDIR = __DIR__ . $SEPARATOR;
+$BASEDIR = "." . $SEPARATOR;
 if(isset($sourceBasedir)) {
 	$BASEDIR = $sourceBasedir . $SEPARATOR;
 }
