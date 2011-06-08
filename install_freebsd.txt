@@ -52,6 +52,8 @@ setenv LC_CTYPE sv_SE.UTF-8
 set prompt = '%m%~: '
 alias ls ls -F
 unset autologout
+alias screens screen -U -S basic
+alias screenr screen -U -d -r basic
 
 # ssh on additional port
 vi /etc/ssh/sshd_config
@@ -64,6 +66,19 @@ vi /etc/ssh/sshd_config
 #
 # http://www.freebsd.org/doc/handbook/disks-adding.html
 #
+
+
+# -----------------------------------------------------------------------------
+#
+# Security
+#
+# 
+#
+rkhunter?
+pf deny all
+mail to sysadm
+nmap check open ports
+time faulty ssh-logins, see dada
 
 
 # -----------------------------------------------------------------------------
@@ -147,9 +162,8 @@ WITHOUT_WIRELESS="YES"
 WITHOUT_WPA_SUPPLICANT_EAPOL="YES"
 WITHOUT_ZFS="YES"
 
-
 # Retrieve sources for FreeBSD
-sysutils Configure Distributions Src All
+sysinstall Configure Distributions Src All
 
 # http://www.freebsd.org/doc/handbook/jails-build.html
 # http://www.freebsd.org/doc/handbook/jails-application.html
@@ -176,6 +190,7 @@ mv root /home/j/skel
 
 #  4. Use mergemaster to install missing configuration files. 
 # Then get rid of the extra directories that mergemaster creates:
+# let mergemaster do the proposed changes...
 mergemaster -t /home/j/skel/var/tmp/temproot -D /home/j/skel -i
 cd /home/j/skel
 rm -R bin boot lib libexec mnt proc rescue sbin sys usr dev
@@ -203,20 +218,24 @@ WRKDIRPREFIX?=  /s/portbuild
 #
 
 # 1. Add to /etc/fstab
+vi /etc/fstab
 /home/j/mroot   /home/j/www     nullfs  ro  0   0
 /home/js/www    /home/j/www/s   nullfs  rw  0   0
 
 # 2. Configure in /etc/rc.conf
-vi /etc/fstab
+vi /etc/rc.conf
 # Jail general
 jail_enable="YES"
 jail_set_hostname_allow="NO"
 jail_list="ns mail www"
+jail_interface="re0"
+
 # Specific jail config
 jail_www_hostname="www.example.org"
 jail_www_ip="10.0.0.10"
 jail_www_rootdir="/usr/home/j/www"
 jail_www_devfs_enable="YES"
+jail_www_exec_start="/bin/sh /etc/rc"
 
 # 3. Create mountpoint
 mkdir /home/j/www
@@ -238,24 +257,75 @@ jexec 3 tcsh
 jexec 3 sh /etc/rc.shutdown
 
 #
-# Setup ip aliases for each jail
+# Setup ip aliases for each jail (not needed, created by settings in /etc/rc.conf)
 #
 #ifconfig re0 10.0.0.1 netmask 255.255.255.255 alias
 
-vi /etc/rc.conf
-# IP aliases
-ifconfig_re0_alias0="10.0.0.1 netmask 255.255.255.255"
-
-/etc/rc.d/netif restart && /etc/rc.d/routing restart
+#vi /etc/rc.conf
+# IP aliases 
+#ifconfig_re0_alias0="10.0.0.1 netmask 255.255.255.255"
+#/etc/rc.d/netif restart && /etc/rc.d/routing restart
 
 #
-# allow ping in jails
+# allow ping in jails, aids when testing
 #
 vi /etc/sysctl.conf
 security.jail.allow_raw_sockets=1
 /etc/rc.d/sysctl restart
 
 restart the jails.
+
+
+#
+# in rc.conf (?)
+#
+jail_cell_exec_start="/bin/sh /etc/rc"
+
+
+#
+# Read manpage on jail
+#
+#Setting up the Host Environment to be jail friendly
+
+# disable ip-services that listen on all network adresses.
+sendmail_enable="NO"
+#inetd_flags="-wW -a 192.0.2.23"
+rpcbind_enable="NO"
+# sshd
+vi /etc/ssh/sshd_config
+# sendmail
+vi /etc/mail/sendmail.cf
+# named
+vi /etc/namedb/named.conf
+# more rpc(3), rpcbind(8), nfsd(8), and mountd(8)
+
+
+
+#
+# nat & port forwarding
+#
+vi /etc/rc.conf
+# routing
+#defaultrouter="194.47.136.1"
+#gateway_enable="YES"
+#natd_enable="YES"
+#natd_interface="re0"
+#natd_flags="-f /etc/natd.conf"
+pf_enable="YES"
+pf_rules="/etc/pf.conf"
+
+www4# cat /etc/pf.conf 
+lan_if="re0"
+lan_if_subnet="any"
+lan_if_ip="194.47.135.68"
+jail_vps_server_ip="10.0.0.0/8"
+nat on $lan_if inet proto { tcp, udp, icmp } from $jail_vps_server_ip to $lan_if_subnet -> $lan_if_ip
+
+# add nameserver to each jail
+vi /etc/resolv.conf
+nameserver 194.47.129.17
+nameserver 194.47.129.157
+
 
 
 
@@ -270,6 +340,15 @@ cd /usr/ports/www/nginx; make install clean
 echo 'nginx_enable="YES"' >> /etc/rc.conf
 vi /usr/local/etc/nginx/nginx.conf
 /usr/local/etc/rc.d/nginx start
+
+
+# Add support for PHP-FPM
+location ~ \.php$ {
+	fastcgi_pass    127.0.0.1:9000;
+	fastcgi_index   index.php;
+	fastcgi_param   SCRIPT_FILENAME /usr/local/www/site$fastcgi_script_name;
+	include fastcgi_params;
+}
 
 
 # -----------------------------------------------------------------------------
@@ -345,23 +424,27 @@ apachectl restart
 cd /usr/ports/databases/mysql51-client && make install clean
 cd /usr/ports/databases/mysql51-server/ && make install clean
 /usr/local/bin/mysql_install_db
+#/usr/local/bin/mysql_install_db --basedir=/usr/local 
 chown -R mysql /var/db/mysql/
 chgrp -R mysql /var/db/mysql/
 echo 'mysql_enable="YES"' >> /etc/rc.conf
-/usr/local/bin/mysqld_safe -user=mysql &
-/usr/local/bin/mysqladmin -u root password newpassword
-mysqladmin shutdown -p
+/usr/local/etc/rc.d/mysql-server start
+/usr/local/bin/mysql_secure_installation
+
+#/usr/local/bin/mysqld_safe -user=mysql &
+#/usr/local/bin/mysqladmin -u root password newpassword
+#mysqladmin shutdown -p
 
 # Configure
 # http://dev.mysql.com/doc/refman/5.1/en/post-installation.html
 #
-mysql -u root -p
-mysql> GRANT ALL ON *.* TO mos@localhost IDENTIFIED BY 'password';
-mysql> SELECT User, Host, Password FROM mysql.user;
-mysql> SET PASSWORD FOR 'root'@'localhost' = PASSWORD('password');
-mysql> SET PASSWORD FOR 'root'@'kaprifolen.dbwebb.se' = PASSWORD('password');
-mysql> SET PASSWORD FOR 'root'@'127.0.0.1' = PASSWORD('password');
-mysql> DELETE FROM mysql.user WHERE User = '';
+#mysql -u root -p
+#mysql> GRANT ALL ON *.* TO mos@localhost IDENTIFIED BY 'password';
+#mysql> SELECT User, Host, Password FROM mysql.user;
+#mysql> SET PASSWORD FOR 'root'@'localhost' = PASSWORD('password');
+#mysql> SET PASSWORD FOR 'root'@'kaprifolen.dbwebb.se' = PASSWORD('password');
+#mysql> SET PASSWORD FOR 'root'@'127.0.0.1' = PASSWORD('password');
+#mysql> DELETE FROM mysql.user WHERE User = '';
 
 /usr/local/etc/rc.d/mysql-server restart
 
@@ -370,7 +453,7 @@ mysql> DELETE FROM mysql.user WHERE User = '';
 #
 # PHP
 # 
-# Don't forget to check to build for apache.
+# Don't forget to check to build for apache (or fpm).
 #
 cd /usr/ports/lang/php5 && make config install clean
 
@@ -407,6 +490,15 @@ cd /usr/ports/ftp/php5-curl ; make install clean
 cd /usr/ports/net/php5-sockets ; make install clean
 
 apachectl restart
+
+# using php-fpm?
+echo 'php_fpm_enable="YES"' >> /etc/rc.conf
+# review
+vi /usr/local/etc/php-fpm.conf
+
+/usr/local/etc/rc.d/php-fpm start
+/usr/local/etc/rc.d/nginx restart
+
 
 
 # -----------------------------------------------------------------------------
