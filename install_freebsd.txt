@@ -23,6 +23,7 @@ Run diskutil eject /dev/diskN and remove your flash media when the command compl
 #
 # http://www.freebsd.org/doc/en_US.ISO8859-1/books/handbook/ports-using.html
 # 
+# setenv BATCH yes
 install freebsd, minimal install
 
 portsnap fetch
@@ -37,6 +38,7 @@ cd /usr/ports/net/rsync/ && make install clean
  add -atime
 cd /usr/ports/archivers/zip && make install clean
 cd /usr/ports/ftp/wget && make install clean
+cd /usr/ports/ports-mgmt/portupgrade && make install clean
 
 sysinstall & install manualpages Configure - Distributions - System Manual Pages
 
@@ -71,6 +73,15 @@ ls /etc/dev
 
 # format disk for both Linux and FreeBSD
 mkfs.ext2 -I 128 /dev/sdu1
+
+# -----------------------------------------------------------------------------
+#
+# Torrents
+#
+# http://libtorrent.rakshasa.no/wiki
+# http://code.google.com/p/rssdler/
+#
+cd /usr/ports/net-p2p/rtorrent/ && make install clean
 
 
 # -----------------------------------------------------------------------------
@@ -115,6 +126,7 @@ nolocks,locallocks,intr,soft,wsize=32768,rsize=32768,noatime,nosuid
 #
 # 
 #
+snort? http://www.snort.org/
 rkhunter?
 pf deny all
 mail to sysadm
@@ -204,8 +216,6 @@ WITHOUT_WPA_SUPPLICANT_EAPOL="YES"
 WITHOUT_ZFS="YES"
 
 # Retrieve sources for FreeBSD
-sysinstall Configure Distributions Src All
-
 # http://www.freebsd.org/doc/handbook/jails-build.html
 # http://www.freebsd.org/doc/handbook/jails-application.html
 # 1. prepare and build src
@@ -315,12 +325,6 @@ security.jail.allow_raw_sockets=1
 /etc/rc.d/sysctl restart
 
 restart the jails.
-
-
-#
-# in rc.conf (?)
-#
-jail_cell_exec_start="/bin/sh /etc/rc"
 
 
 #
@@ -462,15 +466,15 @@ apachectl restart
 #
 # http://dev.mysql.com/doc/refman/5.1/en/mysql-installation-freebsd.html
 #
-cd /usr/ports/databases/mysql51-client && make install clean
-cd /usr/ports/databases/mysql51-server/ && make install clean
-/usr/local/bin/mysql_install_db
-#/usr/local/bin/mysql_install_db --basedir=/usr/local 
+cd /usr/ports/databases/mysql55-server/ && make install clean
+#cd /usr/ports/databases/mysql55-client && make install clean
 chown -R mysql /var/db/mysql/
 chgrp -R mysql /var/db/mysql/
+cd /usr/local && /usr/local/bin/mysql_install_db
+#/usr/local/bin/mysql_install_db --basedir=/usr/local 
+/usr/local/bin/mysql_secure_installation
 echo 'mysql_enable="YES"' >> /etc/rc.conf
 /usr/local/etc/rc.d/mysql-server start
-/usr/local/bin/mysql_secure_installation
 
 #/usr/local/bin/mysqld_safe -user=mysql &
 #/usr/local/bin/mysqladmin -u root password newpassword
