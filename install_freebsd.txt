@@ -86,6 +86,14 @@ cd /usr/ports/net-p2p/rtorrent/ && make install clean
 
 # -----------------------------------------------------------------------------
 #
+# Authentication with ssh-keys
+#
+ssh-keygen -t dsa
+cat ~/.ssh/id_dsa.pub | ssh mos@server.com 'cat >>.ssh/authorized_keys' 
+
+
+# -----------------------------------------------------------------------------
+#
 # NFS
 #
 # http://www.freebsd.org/doc/handbook/network-nfs.html
