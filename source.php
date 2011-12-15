@@ -313,7 +313,7 @@ if(isset($_GET['file'])) {
 		foreach($source_a as $source_row) {
 			$source_i++;
 			$source_sloc += (empty($source_row)) ? 0 : 1;
-			$source_rownums .= "<a id='L{$source_i}' href='#L{$source_i}'>{$source_i}</a><br />";
+			$source_rownums .= "<code><a id='L{$source_i}' href='#L{$source_i}'>{$source_i}</a></code><br />";
 			$source_text .= $source_row . '<br />';
 		}
 		$source_content = <<< EOD
