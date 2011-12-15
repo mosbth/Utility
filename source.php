@@ -360,11 +360,9 @@ $sourceStyle=<<<EOD
  		div.container {
 			min-width: 40em;
 			font-family: monospace;
-			font-size: 1em;
  		}
  		div.header {
 			color: #000;
-			font-size: 1.1em;
 			border: solid 1px #999;
 			border-bottom: 0px;
 			background: #eee;
