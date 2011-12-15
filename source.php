@@ -11,6 +11,9 @@
 //
 // Change history:
 // 
+// 2011-12-15: 
+// Changed stylesheet to be compatible with blueprintcss style. 
+//
 // 2011-05-31: 
 // The update 2011-04-13 which supported follow symlinks has security issues. The follow of 
 // symlinks, where destination path (realpath) is not below $BASEPATH, is disabled.
