@@ -177,8 +177,7 @@ $source_currpath = substr($source_fullpath2, $source_len+1);
 //
 $source_dir				= basename($source_fullpath1);
 $source_dirname 	= basename($source_fullpath);
-echo $source_currpath;
-$source_dir_parts = explode($SEPARATOR, trim($source_currpath, $SEPARATOR));
+$source_dir_parts = !empty($source_currpath) ? explode($SEPARATOR, trim($source_currpath, $SEPARATOR)) : null;
 $source_dir_path = "<a href='{$HREF}dir='>" . trim($source_dir, $SEPARATOR) . "</a>{$SEPARATOR}";
 foreach($source_dir_parts as $val) {
 	@$dir .= "{$val}{$SEPARATOR}";	
