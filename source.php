@@ -179,7 +179,7 @@ $source_dir				= basename($source_fullpath1);
 $source_dirname 	= basename($source_fullpath);
 $source_dir_parts = explode('/', trim($source_dirname, '/'));
 $source_dir_path = "<a href='{$HREF}dir='>{$source_start}</a>";
-foreach($parts in $val) {
+foreach($parts as $val) {
 	$source_dir .= "{$SEPARATOR}{$val}";
 	$source_dir_path .= " {$SEPARATOR} <a href='{$HREF}dir='>{$source_dir}</a>";
 }
