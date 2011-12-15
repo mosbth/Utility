@@ -175,7 +175,7 @@ $source_currpath = substr($source_fullpath2, $source_len+1);
 //
 // Show the name of the current directory
 //
-$source_dir				= basename($source_fullpath1);
+$source_dir				= trim(basename($source_fullpath1), '/');
 $source_dirname 	= basename($source_fullpath);
 $source_dir_parts = explode('/', trim($source_currpath, '/'));
 $source_dir_path = "<a href='{$HREF}dir='>{$source_dir}</a>{$SEPARATOR}";
