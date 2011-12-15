@@ -12,7 +12,8 @@
 // Change history:
 // 
 // 2011-12-15: 
-// Changed stylesheet to be compatible with blueprintcss style. 
+// Changed stylesheet to be compatible with blueprintcss style. Made all dirs clickable when 
+// traversing down a dir-chain.
 //
 // 2011-05-31: 
 // The update 2011-04-13 which supported follow symlinks has security issues. The follow of 
@@ -174,14 +175,15 @@ $source_currpath = substr($source_fullpath2, $source_len+1);
 //
 // Show the name of the current directory
 //
-$source_start		= basename($source_fullpath1);
+$source_dir				= basename($source_fullpath1);
 $source_dirname 	= basename($source_fullpath);
-$source_html .= <<<EOD
-<p>
-<a href='{$HREF}dir='>{$source_start}</a>{$SEPARATOR}{$source_currpath}
-</p>
-
-EOD;
+$source_dir_parts = explode('/', trim($source_dirname, '/'));
+$source_dir_path = "<a href='{$HREF}dir='>{$source_start}</a>";
+foreach($parts in $val) {
+	$source_dir .= "{$SEPARATOR}{$val}";
+	$source_dir_path .= " {$SEPARATOR} <a href='{$HREF}dir='>{$source_dir}</a>";
+}
+$source_html .= "<p><code>$source_dir_path</code></p>";
 
 
 // -------------------------------------------------------------------------------------------
