@@ -176,13 +176,8 @@ $source_currpath = substr($source_fullpath2, $source_len+1);
 // Show the name of the current directory
 //
 $source_dir				= basename($source_fullpath1);
-echo "$source_currpath:";
-echo "$source_dir:";
-echo "$source_fullpath1:";
 $source_dirname 	= basename($source_fullpath);
-echo "$source_dirname:";
-echo "$source_fullpath:";
-$source_dir_parts = explode('/', trim($source_dirname, '/'));
+$source_dir_parts = explode('/', trim($source_currpath, '/'));
 $source_dir_path = "<a href='{$HREF}dir='>{$source_dir}</a>{$SEPARATOR}";
 foreach($source_dir_parts as $val) {
 	@$dir .= "{$val}{$SEPARATOR}";	
