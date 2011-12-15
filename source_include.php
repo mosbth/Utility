@@ -11,7 +11,7 @@
  */
 
 // Include code from source.php to display sourcecode-viewer
-$sourceBasedir=__DIR__;  // Which directory to display
+$sourceBasedir=dirname(__FILE__);  // Which directory to display
 $sourceBaseUrl="?";      // What is the base url of of this script?
 $sourceNoEcho=true;      // Do not echo result, store in $sourceBody instead
 $sourceNoIntro=true;     // Do not display the intro, I want to write my own header and ingress
