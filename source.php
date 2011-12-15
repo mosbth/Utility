@@ -179,9 +179,10 @@ $source_dir				= basename($source_fullpath1);
 $source_dirname 	= basename($source_fullpath);
 $source_dir_parts = explode('/', trim($source_dirname, '/'));
 $source_dir_path = "<a href='{$HREF}dir='>{$source_dir}</a>";
+pop($source_dir);
 foreach($source_dir_parts as $val) {
-	@$dir .= "{$val}{$SEPARATOR}";
-	$source_dir_path .= "{$SEPARATOR}<a href='{$HREF}dir={$dir}'>{$val}</a>";
+	@$dir .= "{$val}{$SEPARATOR}";	
+	$source_dir_path .= "{$SEPARATOR}<a href='{$HREF}dir=" . rtrim($dir, $SEPARATOR) . "'>{$val}</a>";
 }
 $source_html .= "<p><code>$source_dir_path</code></p>";
 
