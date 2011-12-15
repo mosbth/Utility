@@ -359,7 +359,6 @@ $sourceBody=$source_html;
 $sourceStyle=<<<EOD
  		div.container {
 			min-width: 40em;
-			font-family: monospace;
  		}
  		div.header {
 			color: #000;
