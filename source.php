@@ -181,7 +181,7 @@ $source_dir_parts = explode('/', trim($source_dirname, '/'));
 $source_dir_path = "<a href='{$HREF}dir='>{$source_dir}</a>";
 foreach($source_dir_parts as $val) {
 	$source_dir .= "{$SEPARATOR}{$val}";
-	$source_dir_path .= " {$SEPARATOR} <a href='{$HREF}dir='>{$source_dir}</a>";
+	$source_dir_path .= " {$SEPARATOR} <a href='{$HREF}dir={$source_dir}'>{$val}</a>";
 }
 $source_html .= "<p><code>$source_dir_path</code></p>";
 
