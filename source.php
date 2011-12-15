@@ -199,9 +199,9 @@ if(is_dir($source_dir)) {
         	if($source_file != '.' && $source_file != '..' && $source_file != '.svn' && $source_file != '.git' && $source_file != '.htaccess') {
         		$source_curfile = $source_fullpath . $SEPARATOR . $source_file;
         		if(is_dir($source_curfile)) {
-          	  		$source_list[$source_file] = "<a href='{$HREF}dir={$source_curdir1}{$source_file}'>{$source_file}{$SEPARATOR}</a>";
+          	  		$source_list[$source_file] = "<code><a href='{$HREF}dir={$source_curdir1}{$source_file}'>{$source_file}{$SEPARATOR}</a></code>";
           	  	} else if(is_file($source_curfile)) {
-          	  	  $source_list[$source_file] = "<a href='{$HREF}dir={$source_curdir2}&amp;file={$source_file}'>{$source_file}</a>";
+          	  	  $source_list[$source_file] = "<code><a href='{$HREF}dir={$source_curdir2}&amp;file={$source_file}'>{$source_file}</a></code>";
           	  	}
           	 }
         }
@@ -320,7 +320,7 @@ if(isset($_GET['file'])) {
 <div class='container'>
 <div class='header'>
 <!-- {$source_i} lines ({$source_sloc} sloc) -->
-{$source_i} lines  {$source_encoding} {$source_lineendings} {$source_linkToDisplaySvg}
+<code>{$source_i} lines  {$source_encoding} {$source_lineendings} {$source_linkToDisplaySvg}</code>
 </div>
 <div class='rows'>
 {$source_rownums}
@@ -341,7 +341,7 @@ EOD;
 	}
 	
 	$source_html .= <<<EOD
-<h3 id="file"><a href="#file">{$source_file}</a></h3>
+<h3 id="file"><code><a href="#file">{$source_file}</a></code></h3>
 {$source_content}
 EOD;
 }
