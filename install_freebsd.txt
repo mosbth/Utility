@@ -8,6 +8,7 @@ http://www.webupd8.org/2009/04/4-ways-to-create-bootable-live-usb.html
 4. Using Diskutil (Mac OS X only)
 
 Download the desired .img file
+(or convert from iso: hdiutil convert -format UDRW -o target.img file.iso)
 Open a Terminal (under Utilities)
 Run diskutil list to get the current list of devices
 Insert your flash media
