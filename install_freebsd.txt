@@ -95,6 +95,19 @@ cat ~/.ssh/id_dsa.pub | ssh mos@server.com 'cat >>.ssh/authorized_keys'
 
 # -----------------------------------------------------------------------------
 #
+# Samba
+#
+# http://www.freebsd.org/doc/handbook/network-samba.html
+#
+cd /usr/ports/net/samba34 && make install clean
+cp /usr/local/share/examples/samba34/smb.conf.default /usr/local/etc/smb.conf
+vi /usr/local/etc/smb.conf
+echo 'samba_enable="YES"' >> /etc/rc.conf
+
+/usr/local/etc/rc.d/samba start|stop|restart
+
+# -----------------------------------------------------------------------------
+#
 # NFS
 #
 # http://www.freebsd.org/doc/handbook/network-nfs.html
@@ -123,6 +136,15 @@ mountd -r
 
 /etc/rc.d/lockd start
 /etc/rc.d/statd start
+
+
+#restart when changed /etc/exports
+/etc/rc.d/mountd onereload
+
+#utilities
+showmount -a
+showmount -e
+
 
 # mount on mac
 nolocks,locallocks,intr,soft,wsize=32768,rsize=32768,noatime
@@ -405,6 +427,48 @@ location ~ \.php$ {
 }
 
 
+#
+# http://wiki.nginx.org/Configuration
+# /usr/local/etc/nginx/nginx.conf sample
+#
+worker_processes  1;
+events {
+    worker_connections  1024;
+}
+
+http {
+  include             mime.types;
+  default_type        application/octet-stream;
+  sendfile            on;
+  keepalive_timeout   65;
+  client_max_body_size 10M;
+  client_body_buffer_size 128k;
+
+
+  server {
+    listen  80;
+    server_name     anna.megamic.se;
+  
+    location / {
+      rewrite           ^(.*)$ /anna$1 break; 
+      proxy_pass        http://192.168.0.197;
+      proxy_set_header  Host $host;      
+      proxy_set_header  X-Real-IP $remote_addr;
+      proxy_set_header  X-Forwarded-For $proxy_add_x_forwarded_for;
+    }
+  }
+
+  server {
+    listen  80 default_server;
+    server_name     -;
+    index   index.html;
+    root    /usr/home/mos/htdocs/default;
+    error_page  404              /404.html;
+    error_page  500 502 503 504  /50x.html;
+  }
+}
+
+
 # -----------------------------------------------------------------------------
 #
 # Apache
@@ -501,6 +565,22 @@ echo 'mysql_enable="YES"' >> /etc/rc.conf
 #mysql> DELETE FROM mysql.user WHERE User = '';
 
 /usr/local/etc/rc.d/mysql-server restart
+
+
+#
+# MySQL setting up slaveserver
+# http://dev.mysql.com/doc/refman/5.1/en/replication-howto.html
+#
+On master:
+Create a /etc/my.cnf & enable binary logging
+
+On slave:
+Create a /etc/my.cnf & enable as slave
+
+Create a user which the slave server can use to connect to the master
+mysql> CREATE USER 'repl'@'host.com' IDENTIFIED BY 'secretpass';
+mysql> GRANT REPLICATION SLAVE ON *.* TO 'repl'@'host.com' ;
+
 
 
 # -----------------------------------------------------------------------------
