@@ -577,10 +577,21 @@ Create a /etc/my.cnf & enable binary logging
 On slave:
 Create a /etc/my.cnf & enable as slave
 
+On master:
 Create a user which the slave server can use to connect to the master
 mysql> CREATE USER 'repl'@'host.com' IDENTIFIED BY 'secretpass';
 mysql> GRANT REPLICATION SLAVE ON *.* TO 'repl'@'host.com' ;
 
+Create a snapshop of the database and record binary log entry.
+http://dev.mysql.com/doc/refman/5.5/en/replication-howto-mysqldump.html
+
+On slave:
+mysql> CHANGE MASTER TO MASTER_HOST='host.com', MASTER_PORT=3306, MASTER_USER='repl', MASTER_PASSWORD='secretpass';
+
+Useful:
+mysql> SLAVE STOP
+mysql> SLAVE START
+mysql> SHOW SLAVE STATUS
 
 
 # -----------------------------------------------------------------------------
