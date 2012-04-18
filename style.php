@@ -13,6 +13,7 @@
  *
  * @author Mikael Roos mos@dbwebb.se
  * @example http://dbwebb.se/example/lessphp/
+ * @link https://github.com/mosbth/Utility/blob/master/style.php
  */
 // __DIRNAME__only available from PHP 5.3 and forward
 if(!defined('__DIR__')) define('__DIR__', dirname(__FILE__));
