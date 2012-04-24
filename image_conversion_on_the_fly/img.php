@@ -94,7 +94,6 @@ if($recache) {
   $process = $image->Resize();
   $image_to_output = $process['new_file_path'];
 }
-die('hej');
 
 
 // Output
