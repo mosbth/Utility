@@ -8,7 +8,7 @@
  *
  */
 set_time_limit(20);
-isset($_GET['src']) or die('Must set src.');
+isset($_GET['src']) or die('Must set src. <a href="img.php?source=higher.jpg">img.php?source=higher.jpg</a> or <a href="img.php?source=wider.jpg">img.php?source=wider.jpg</a>');
 
 // Source must be set or exit
 /*
