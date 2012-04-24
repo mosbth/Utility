@@ -62,6 +62,7 @@ if($cache) {
   }
 }
 
+die('hej');
 
 // Check cache or process file
 $image_to_output = $image_to_resize;
