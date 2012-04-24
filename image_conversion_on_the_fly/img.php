@@ -42,6 +42,7 @@ is_null($new_width)  || is_numeric($new_width)  or die('Width not numeric');
 is_null($new_height) || is_numeric($new_height) or die('Height not numeric');
 is_file($image_to_resize) or die('Image file does not exists'.$image_to_resize);
 
+die('hej');
 
 // Create path to the cached img, set its name based on passed arguments
 $cache = null;
@@ -62,7 +63,6 @@ if($cache) {
   }
 }
 
-die('hej');
 
 // Check cache or process file
 $image_to_output = $image_to_resize;
