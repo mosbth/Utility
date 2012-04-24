@@ -8,7 +8,7 @@
  *
  */
 $extensions = array('jpg', 'jpeg', 'png', 'bmp', 'gif');
-$valid = implode(', ', $extenstions);
+$valid = implode(', ', $extensions);
 $usage = <<<EOD
 <p>You must set the src attribute pointing to a valid image.
 For example: <a href="img.php?src=higher.jpg">img.php?src=higher.jpg</a> or <a href="img.php?src=wider.jpg">img.php?src=wider.jpg</a>.
