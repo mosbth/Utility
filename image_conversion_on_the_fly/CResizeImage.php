@@ -26,7 +26,7 @@ class CResizeImage {
     if(!file_exists($this->image_to_resize)) {
       exit("File ".$this->image_to_resize." does not exist.");
     }
-    die('moped');
+
     $info = GetImageSize($this->image_to_resize);
     
     if(empty($info)) {

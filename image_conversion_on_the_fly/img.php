@@ -7,7 +7,7 @@
  * Mos added caching and rewrote some code.
  *
  */
-$source_img_dir = '/img';
+$source_img_dir = __DIR__.'/img';
 $cache_dir = $source_img_dir.'/cache';
 $extensions = array('jpg', 'jpeg', 'png', 'bmp', 'gif');
 $valid = implode(', ', $extensions);
@@ -31,7 +31,7 @@ in_array($fileparts['extension'], $extensions) or die('Not a valid extension.');
 // Get all arguments and set for coming calculation
 $new_width        = isset($_GET['width']) ? $_GET['width'] : null;
 $new_height       = isset($_GET['height']) ? $_GET['height'] : null;
-$image_to_resize  = __DIR__."/$source_img_dir/$filename";
+$image_to_resize  = "$source_img_dir/$filename";
 $ratio            = isset($_GET['no-ratio']) ? false : true; // Keep Aspect Ratio?
 $new_image_name   = $filename;
 
@@ -55,7 +55,7 @@ if($new_width && $new_height) {
 // Path where the new image should be saved. If it's not set the script will output the image without saving it 
 $save_folder = null;
 if($cache) {
-  $save_folder = __DIR__."/$cache_dir/$cache";
+  $save_folder = "$cache_dir/$cache";
   if(!is_dir($save_folder)) {
     mkdir($save_folder) or die('Failed to create cache directory.');
   }
@@ -65,7 +65,7 @@ if($cache) {
 // Check cache or process file
 $image_to_output = $image_to_resize;
 $time = filemtime($image_to_resize);
-$cachefile = "{$save_folder}/{$filename}";
+$cachefile = "$save_folder/$filename";
 $recache = false;
 if($save_folder && is_file($cachefile)) {
   $cachetime = filemtime($cachefile);
