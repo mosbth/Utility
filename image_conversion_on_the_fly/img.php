@@ -24,7 +24,7 @@ set_time_limit(20);
 isset($_GET['src']) or die($usage);
 $filename = basename($_GET['src']);
 $fileparts = pathinfo($filename);
-in_array($fileparts['extension'], $valid) or die('Not a valid extension.');
+in_array($fileparts['extension'], $extensions) or die('Not a valid extension.');
 
 // Get all arguments and set for coming calculation
 $new_width        = isset($_GET['width']) ? $_GET['width'] : null;
