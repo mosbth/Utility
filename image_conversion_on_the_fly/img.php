@@ -7,6 +7,7 @@
  * Mos added caching and rewrote some code.
  *
  */
+error_reporting(-1);
 $source_img_dir = __DIR__.'/img';
 $cache_dir = $source_img_dir.'/cache';
 $extensions = array('jpg', 'jpeg', 'png', 'bmp', 'gif');
@@ -16,7 +17,7 @@ $usage = <<<EOD
 For example: <a href="img.php?src=higher.jpg">img.php?src=higher.jpg</a> or <a href="img.php?src=wider.jpg">img.php?src=wider.jpg</a>.
 </p>
 <p>The image name must have a valid extension: ({$valid})</p>
-<p>Try using any combination of the following arguments to the query string: 'width=40', 'height=40', 'no-ratio'.</p> 
+<p>Try using any combination of the following arguments to the query string: 'width=200', 'height=200', 'no-ratio'.</p> 
 EOD;
 
 // Set some limit on script if processing is carried away
@@ -29,7 +30,7 @@ $fileparts = pathinfo($filename);
 in_array($fileparts['extension'], $extensions) or die('Not a valid extension.');
 
 // Get all arguments and set for coming calculation
-$new_width        = isset($_GET['width']) ? $_GET['width'] : null;
+$new_width        = isset($_GET['width'])  ? $_GET['width']  : null;
 $new_height       = isset($_GET['height']) ? $_GET['height'] : null;
 $image_to_resize  = "$source_img_dir/$filename";
 $ratio            = isset($_GET['no-ratio']) ? false : true; // Keep Aspect Ratio?
