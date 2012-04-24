@@ -8,7 +8,7 @@
  *
  */
 set_time_limit(20);
-isset($_GET['src'])) or die('Must set src.');
+isset($_GET['src']) or die('Must set src.');
 
 // Source must be set or exit
 /*
