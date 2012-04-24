@@ -8,11 +8,14 @@
  *
  */
 set_time_limit(20);
+isset($_GET['src'])) or die('Must set src.');
 
 // Source must be set or exit
+/*
 if(!isset($_GET['src'])) {
   die('Must set src.');
 }
+*/
 $filename = $_GET['src'];
 
 $new_width        = isset($_GET['width']) ? $_GET['width'] : null;
