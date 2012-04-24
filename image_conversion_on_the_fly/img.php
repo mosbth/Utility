@@ -35,8 +35,8 @@ $new_image_name   = $filename;
 
 
 //Check that only figures is input
-is_numeric($new_width)  or die('Width not numeric');
-is_numeric($new_height) or die('Height not numeric');
+is_null($new_width)  || is_numeric($new_width)  or die('Width not numeric');
+is_null($new_height) || is_numeric($new_height) or die('Height not numeric');
 
 /*
 if($new_width && !is_numeric($new_width)) {
