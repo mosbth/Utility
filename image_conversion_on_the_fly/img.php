@@ -80,7 +80,7 @@ if($save_folder && is_file($cachefile)) {
   $recache = true;
 }
 
-
+die('hej');
 // Resize
 if($recache) {
   include __DIR__.'CResizeImage.php';
@@ -91,7 +91,7 @@ if($recache) {
   $image->ratio           = $ratio;
   $image->new_image_name  = $new_image_name;
   $image->save_folder     = $save_folder;
-  $process = $image->resize();
+  $process = $image->Resize();
   $image_to_output = $process['new_file_path'];
 }
 
