@@ -39,7 +39,7 @@ $new_image_name   = $filename;
 // Do some sanity checks
 is_null($new_width)  || is_numeric($new_width)  or die('Width not numeric');
 is_null($new_height) || is_numeric($new_height) or die('Height not numeric');
-!is_file($image_to_resize) or die('Image file does not exists'.$image_to_resize);
+is_file($image_to_resize) or die('Image file does not exists'.$image_to_resize);
 
 
 // Create path to the cached img, set its name based on passed arguments
