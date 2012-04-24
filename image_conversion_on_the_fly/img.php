@@ -7,6 +7,8 @@
  * Mos added caching and rewrote some code.
  *
  */
+$source_img_dir = 'img';
+$cache_dir = $source_img_dir.'/cache';
 $extensions = array('jpg', 'jpeg', 'png', 'bmp', 'gif');
 $valid = implode(', ', $extensions);
 $usage = <<<EOD
@@ -29,29 +31,18 @@ in_array($fileparts['extension'], $extensions) or die('Not a valid extension.');
 // Get all arguments and set for coming calculation
 $new_width        = isset($_GET['width']) ? $_GET['width'] : null;
 $new_height       = isset($_GET['height']) ? $_GET['height'] : null;
-$image_to_resize  = __DIR__."/img/$filename";
+$image_to_resize  = __DIR__."$source_img_dir/$filename";
 $ratio            = isset($_GET['no-ratio']) ? false : true; // Keep Aspect Ratio?
 $new_image_name   = $filename;
 
 
-//Check that only figures is input
+// Do some sanity checks
 is_null($new_width)  || is_numeric($new_width)  or die('Width not numeric');
 is_null($new_height) || is_numeric($new_height) or die('Height not numeric');
-
-/*
-if($new_width && !is_numeric($new_width)) {
-  die('Width not numeric');
-}
-if($new_height && !is_numeric($new_height)) {
-  die('Height not numeric');
-}
-*/
-
-// Check that original file exists
 is_file($image_to_resize) or die('File does not exists');
 
 
-// Create path to the cached img
+// Create path to the cached img, set its name based on passed arguments
 $cache = null;
 $r = ($ratio ? null : 'r');
 if($new_width && $new_height) {
@@ -64,7 +55,7 @@ if($new_width && $new_height) {
 // Path where the new image should be saved. If it's not set the script will output the image without saving it 
 $save_folder = null;
 if($cache) {
-  $save_folder = __DIR__."/img/cache/$cache";
+  $save_folder = __DIR__."/$cache_dir/$cache";
   if(!is_dir($save_folder)) {
     mkdir($save_folder) or die('Failed to create cache directory.');
   }
