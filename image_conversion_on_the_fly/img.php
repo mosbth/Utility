@@ -83,8 +83,9 @@ if($save_folder && is_file($cachefile)) {
 
 // Resize
 if($recache) {
-  include __DIR__.'CResizeImage.php';
+  include __DIR__.'/CResizeImage.php';
   $image = new CResizeImage();
+die('hej1');
   $image->new_width       = $new_width;
   $image->new_height      = $new_height;
   $image->image_to_resize = $image_to_resize;
