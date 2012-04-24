@@ -57,7 +57,7 @@ $save_folder = null;
 if($cache) {
   $save_folder = __DIR__."/$cache_dir/$cache";
   if(!is_dir($save_folder)) {
-    mkdir($save_folder) or die('Failed to create cache directory. $save_folder');
+    mkdir($save_folder) or die('Failed to create cache directory.'.$save_folder);
   }
 }
 
