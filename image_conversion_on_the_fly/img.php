@@ -7,7 +7,7 @@
  * Mos added caching and rewrote some code.
  *
  */
-$source_img_dir = 'img';
+$source_img_dir = '/img';
 $cache_dir = $source_img_dir.'/cache';
 $extensions = array('jpg', 'jpeg', 'png', 'bmp', 'gif');
 $valid = implode(', ', $extensions);
@@ -31,7 +31,7 @@ in_array($fileparts['extension'], $extensions) or die('Not a valid extension.');
 // Get all arguments and set for coming calculation
 $new_width        = isset($_GET['width']) ? $_GET['width'] : null;
 $new_height       = isset($_GET['height']) ? $_GET['height'] : null;
-$image_to_resize  = __DIR__."$source_img_dir/$filename";
+$image_to_resize  = __DIR__."/$source_img_dir/$filename";
 $ratio            = isset($_GET['no-ratio']) ? false : true; // Keep Aspect Ratio?
 $new_image_name   = $filename;
 
