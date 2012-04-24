@@ -7,18 +7,25 @@
  * Mos added caching and rewrote some code.
  *
  */
+$extensions = array('jpg', 'jpeg', 'png', 'bmp', 'gif');
+$usage = <<<EOD
+<p>You must set the src attribute pointing to a valid image.
+For example: <a href="img.php?src=higher.jpg">img.php?src=higher.jpg</a> or <a href="img.php?src=wider.jpg">img.php?src=wider.jpg</a>.
+</p>
+<p>The image name must have a valid extension: ({implode(', ', $extenstions)})</p>
+<p>Try using any combination of the following arguments to the query string: 'width=40', 'height=40', 'no-ratio'.</p> 
+EOD;
+
+// Set some limit on script if processing is carried away
 set_time_limit(20);
-var_dump(isset($_GET['src']));
-isset($_GET['src']) or die('Must set src. <a href="img.php?source=higher.jpg">img.php?source=higher.jpg</a> or <a href="img.php?source=wider.jpg">img.php?source=wider.jpg</a>');
 
-// Source must be set or exit
-/*
-if(!isset($_GET['src'])) {
-  die('Must set src.');
-}
-*/
-$filename = $_GET['src'];
+// Get the filename and do some checks on it
+isset($_GET['src']) or die($usage);
+$filename = basename($_GET['src']);
+$fileparts = pathinfo($filename);
+in_array($fileparts['extension'], $valid) or die('Not a valid extension.');
 
+// Get all arguments and set for coming calculation
 $new_width        = isset($_GET['width']) ? $_GET['width'] : null;
 $new_height       = isset($_GET['height']) ? $_GET['height'] : null;
 $image_to_resize  = __DIR__."/img/$filename";
@@ -27,13 +34,17 @@ $new_image_name   = $filename;
 
 
 //Check that only figures is input
+($new_width  && !is_numeric($new_width))  or die('Width not numeric');
+($new_height && !is_numeric($new_height)) or die('Height not numeric');
+
+/*
 if($new_width && !is_numeric($new_width)) {
   die('Width not numeric');
 }
 if($new_height && !is_numeric($new_height)) {
   die('Height not numeric');
 }
-
+*/
 
 // Check that original file exists
 is_file($image_to_resize) or die('File does not exists');
