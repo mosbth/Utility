@@ -57,14 +57,13 @@ $save_folder = null;
 if($cache) {
   $save_folder = __DIR__."/$cache_dir/$cache";
   if(!is_dir($save_folder)) {
-    mkdir($save_folder) or die('Failed to create cache directory.'.$save_folder);
+    mkdir($save_folder) or die('Failed to create cache directory.');
   }
 }
 
 
 // Check cache or process file
 $image_to_output = $image_to_resize;
-//$time = mktime(0,0,0,21,5,1980);
 $time = filemtime($image_to_resize);
 $cachefile = "{$save_folder}/{$filename}";
 $recache = false;
@@ -84,7 +83,7 @@ if($save_folder && is_file($cachefile)) {
 
 // Resize
 if($recache) {
-  include __DIR__.'/incl/resize.image.class.php';
+  include __DIR__.'CResizeImage.php';
   $image = new CResizeImage();
   $image->new_width       = $new_width;
   $image->new_height      = $new_height;
