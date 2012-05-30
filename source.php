@@ -406,8 +406,8 @@ if(!isset($sourceNoEcho)) {
 <head>
 	<meta charset="{$source_pageCharset}" />
 	<title>{$source_pageTitle}</title>
-  <meta name="robots" content="noindex" />
-  <meta name="robots" content="noarchive" />
+	<meta name="robots" content="noindex" />
+	<meta name="robots" content="noarchive" />
  	<style>{$sourceStyle}</style>
 	<!--[if IE]> 
 		<script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>		
