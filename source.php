@@ -11,6 +11,9 @@
 //
 // Change history:
 // 
+// 2012-05-30: 
+// Added meta tags to remove this page from search engines and avoid ending up in search results.
+//
 // 2011-12-15: 
 // Changed stylesheet to be compatible with blueprintcss style. Made all dirs clickable when 
 // traversing down a dir-chain.
@@ -403,6 +406,8 @@ if(!isset($sourceNoEcho)) {
 <head>
 	<meta charset="{$source_pageCharset}" />
 	<title>{$source_pageTitle}</title>
+  <meta name="robots" content="noindex" />
+  <meta name="robots" content="noarchive" />
  	<style>{$sourceStyle}</style>
 	<!--[if IE]> 
 		<script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>		
