@@ -8,7 +8,7 @@ http://www.webupd8.org/2009/04/4-ways-to-create-bootable-live-usb.html
 4. Using Diskutil (Mac OS X only)
 
 Download the desired .img file
-(or convert from iso: hdiutil convert -format UDRW -o target.img file.iso)
+(or convert from iso: hdiutil convert -format UDRW -o target.dmg file.iso)
 Open a Terminal (under Utilities)
 Run diskutil list to get the current list of devices
 Insert your flash media
@@ -83,6 +83,19 @@ mkfs.ext2 -I 128 /dev/sdu1
 # http://code.google.com/p/rssdler/
 #
 cd /usr/ports/net-p2p/rtorrent/ && make install clean
+
+
+# -----------------------------------------------------------------------------
+#
+# MiniDLNA
+#
+cd /usr/ports/net/minidlna && make install clean
+vi /usr/local/etc/minidlna.conf
+mkdir /var/db/minidlna
+echo 'minidlna_enable="YES"' >> /etc/rc.conf
+minidlna -h
+minidlna -d
+minidlna
 
 
 # -----------------------------------------------------------------------------
@@ -630,6 +643,8 @@ cd /usr/ports/devel/php5-tokenizer ; make install clean
 cd /usr/ports/textproc/php5-dom ; make install clean
 cd /usr/ports/ftp/php5-curl ; make install clean
 cd /usr/ports/net/php5-sockets ; make install clean
+cd /usr/ports/devel/php5-gettext ; make install clean
+cd /usr/ports/converters/php5-iconv ; make install clean
 
 apachectl restart
 
