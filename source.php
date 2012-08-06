@@ -11,6 +11,9 @@
 //
 // Change history:
 // 
+// 2012-08-06: 
+// Quick fix to display images in base directory. Worked only in subdirectories.
+//
 // 2012-05-30: 
 // Added meta tags to remove this page from search engines and avoid ending up in search results.
 //
