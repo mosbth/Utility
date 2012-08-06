@@ -302,7 +302,11 @@ if(isset($_GET['file'])) {
 	// Display image if a valid image file
 	//
 	if(in_array($source_extension, $IMAGES)) {
-	  $source_imgSrc = $source_file; //empty("{$sourceSubDir}{$source_currentdir}") ? $source_file : "{$sourceSubDir}{$source_currentdir}/{$source_file}";
+	  if(empty($sourceSubDir) && empty($source_currentdir)) {
+	    $source_imgSrc = $source_file;
+	  } else {
+	    $source_imgSrc = "{$sourceSubDir}{$source_currentdir}/{$source_file}";
+	  }
 		$source_content = "<div style='overflow:auto;'><img src='{$source_imgSrc}' alt='[image not found]'></div>";
 
 	//
