@@ -57,6 +57,9 @@ alias ls ls -F
 unset autologout
 alias screens screen -U -S basic
 alias screenr screen -U -d -r basic
+alias la ls -a
+alias ll ls -l
+alias lla ls -ls
 
 # ssh on additional port
 vi /etc/ssh/sshd_config
