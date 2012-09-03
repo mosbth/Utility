@@ -38,6 +38,7 @@ cd /usr/ports/net/rsync/ && make install clean
  add iconv support 
  add -atime
 cd /usr/ports/archivers/zip && make install clean
+cd /usr/ports/archivers/unzip && make install clean
 cd /usr/ports/ftp/wget && make install clean
 cd /usr/ports/ports-mgmt/portupgrade && make install clean
 
