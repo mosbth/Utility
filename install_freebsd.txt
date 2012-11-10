@@ -89,6 +89,7 @@ fetch https://s3.amazonaws.com/MinecraftDownload/launcher/minecraft_server.jar
 
 # http://www.minecraftwiki.net/wiki/Tutorials/FreeBSD_startup_script
 cd /usr/ports/java/diablo-jdk16/; make config install clean
+service minecraft start
 
 
 # -----------------------------------------------------------------------------
