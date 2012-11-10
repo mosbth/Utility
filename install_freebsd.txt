@@ -79,6 +79,18 @@ ls /etc/dev
 # format disk for both Linux and FreeBSD
 mkfs.ext2 -I 128 /dev/sdu1
 
+
+# -----------------------------------------------------------------------------
+#
+# Minecraft server
+#
+# http://minecraft.net/download
+fetch https://s3.amazonaws.com/MinecraftDownload/launcher/minecraft_server.jar
+
+# http://www.minecraftwiki.net/wiki/Tutorials/FreeBSD_startup_script
+cd /usr/ports/java/diablo-jdk16/; make config install clean
+
+
 # -----------------------------------------------------------------------------
 #
 # Torrents
