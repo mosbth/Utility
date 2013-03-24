@@ -53,6 +53,8 @@ echo 'tmpmfs_flags="-S"' >> /etc/rc.conf
 # http://www.cyberciti.biz/tips/freebsd-timeclock-synchronization-with-ntp-server.html
 # http://www.freebsd.org/doc/en/books/handbook/network-ntp.html
 cd /usr/ports/net/ntp; make install
+cat /etc/ntp.conf
+echo 'ntpdate_enable="YES"' >> /etc/rc.conf
 
 # addons to .cshrc
 setenv IRCNAME "Mikael Roos" 
