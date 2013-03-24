@@ -54,8 +54,10 @@ echo 'tmpmfs_flags="-S"' >> /etc/rc.conf
 # http://www.freebsd.org/doc/en/books/handbook/network-ntp.html
 cd /usr/ports/net/ntp; make install
 cat /etc/ntp.conf
+echo 'ntpd_enable="YES"' >> /etc/rc.conf
 echo 'ntpdate_enable="YES"' >> /etc/rc.conf
-ntpd -p /var/run/ntpd.pid
+echo 'ntpdate_hosts="se.pool.ntp.org"' >> /etc/rc.conf
+service ntpd start
 
 # addons to .cshrc
 setenv IRCNAME "Mikael Roos" 
