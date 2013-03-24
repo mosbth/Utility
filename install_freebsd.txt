@@ -50,6 +50,11 @@ echo 'tmpfs="YES"' >> /etc/rc.conf
 echo 'tmpsize="512M"' >> /etc/rc.conf
 echo 'tmpmfs_flags="-S"' >> /etc/rc.conf
 
+#
+# Set time and timezone
+# http://www.cyberciti.biz/faq/howto-set-date-and-time-timezone-in-freebsd/
+#
+# Setup ntpd
 # http://www.cyberciti.biz/tips/freebsd-timeclock-synchronization-with-ntp-server.html
 # http://www.freebsd.org/doc/en/books/handbook/network-ntp.html
 cd /usr/ports/net/ntp; make install
