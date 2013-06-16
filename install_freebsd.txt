@@ -71,6 +71,21 @@ syntax on
 
 
 
+# -----------------------------------------------------------------------------
+#
+# Sudo and rsync as root to keep permissions
+#
+cd /usr/ports/security/sudo ; make install clean
+
+# Change that a user can run rsync through sudo without password.
+visudo
+
+Cmnd_Alias      RSYNC = /usr/local/bin/rsync
+mos        ALL = NOPASSWD: RSYNC
+
+# To enable rsync using root from backup-machine
+# https://mebsd.com/cli-commands/rsync-over-ssh-keeping-file-ownerships-and-permissions.html
+
 
 #
 # Set time and timezone
@@ -89,7 +104,8 @@ service ntpd start
 # addons to .cshrc
 setenv IRCNAME "Mikael Roos" 
 setenv LC_CTYPE sv_SE.UTF-8
-set prompt = '%m%~: '
+#set prompt = '%m%~: '
+set prompt='%n@%m: '
 alias ls ls -F
 unset autologout
 alias screens screen -U -S basic
