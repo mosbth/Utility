@@ -50,6 +50,28 @@ echo 'tmpfs="YES"' >> /etc/rc.conf
 echo 'tmpsize="512M"' >> /etc/rc.conf
 echo 'tmpmfs_flags="-S"' >> /etc/rc.conf
 
+
+
+# -----------------------------------------------------------------------------
+#
+# VIM
+#
+cd /usr/ports/editors/vim; make install clean
+
+# csh
+setenv EDITOR /usr/local/bin/vim
+
+# vimrc
+" Set tabwidth and softtabs
+" retab
+set expandtab tabstop=2 shiftwidth=2
+
+" syntax highlighting
+syntax on
+
+
+
+
 #
 # Set time and timezone
 # http://www.cyberciti.biz/faq/howto-set-date-and-time-timezone-in-freebsd/
