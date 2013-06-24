@@ -126,7 +126,14 @@ vi /etc/ssh/sshd_config
 # http://www.freebsd.org/doc/handbook/disks-adding.html
 #
 ls /etc/dev
+cat /var/log/messages
+gpart destroy -F /dev/da1
+gpart create -s GPT /dev/da1
+gpart add -t freebsd-ufs /dev/da1
+newfs -U -L usb /dev/da1p1
 
+vi /etc/fstab
+/dev/da1p1	/newdisk	ufs	rw	2	2
 
 # format disk for both Linux and FreeBSD
 mkfs.ext2 -I 128 /dev/sdu1
