@@ -138,13 +138,25 @@ vi /etc/fstab
 # format disk for both Linux and FreeBSD
 mkfs.ext2 -I 128 /dev/sdu1
 
+
 # -----------------------------------------------------------------------------
 #
+# Optimize jpeg images.
 # jpegtran http://jpegclub.org/
 #
 cd /usr/ports/graphics/jpeg && make install clean
 
 jpegtran -copy none -optimize -outfile d1.jpg d.jpg
+
+
+# -----------------------------------------------------------------------------
+#
+# Optimize png images
+# optipng http://optipng.sourceforge.net/
+#
+cd /usr/ports/graphics/optipng && make install clean
+
+optipng d.png
 
 
 # -----------------------------------------------------------------------------
