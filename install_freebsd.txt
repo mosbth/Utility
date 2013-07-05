@@ -138,6 +138,14 @@ vi /etc/fstab
 # format disk for both Linux and FreeBSD
 mkfs.ext2 -I 128 /dev/sdu1
 
+# -----------------------------------------------------------------------------
+#
+# jpegtran http://jpegclub.org/
+#
+cd /usr/ports/graphics/jpeg && make install clean
+
+jpegtran -copy none -optimize -outfile d1.jpg d.jpg
+
 
 # -----------------------------------------------------------------------------
 #
