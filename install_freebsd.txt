@@ -742,6 +742,7 @@ cd /usr/ports/net/php5-sockets ; make install clean
 cd /usr/ports/devel/php5-gettext ; make install clean
 cd /usr/ports/converters/php5-iconv ; make install clean
 cd /usr/ports/devel/pecl-intl/ ; make install clean
+cd /usr/ports/graphics/ImageMagick/; make install clean
 
 apachectl restart
 
