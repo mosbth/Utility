@@ -51,6 +51,17 @@ echo 'tmpsize="512M"' >> /etc/rc.conf
 echo 'tmpmfs_flags="-S"' >> /etc/rc.conf
 
 
+# -----------------------------------------------------------------------------
+#
+# Check filesystems in single user mode
+#
+
+# remount root partition in writable mode
+mount -u /
+
+# Check and repair filesystems
+fsck -y
+
 
 # -----------------------------------------------------------------------------
 #
