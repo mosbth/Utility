@@ -754,6 +754,7 @@ cd /usr/ports/devel/php5-gettext ; make install clean
 cd /usr/ports/converters/php5-iconv ; make install clean
 cd /usr/ports/devel/pecl-intl/ ; make install clean
 cd /usr/ports/graphics/ImageMagick/; make install clean
+cd /usr/ports/graphics/php5-exif/; make install clean
 
 apachectl restart
 
